@@ -6,7 +6,7 @@
     <title>Dungeon World Chat - Dragon Con Sector</title>
     <style>
         body { background-color: #050505; color: #f0f0f0; font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 850px; margin: auto; }
-        
+
         .system-ai {
             background: linear-gradient(180deg, #990000 0%, #300000 100%);
             border: 5px solid #ff4500;
@@ -20,7 +20,7 @@
 
         .chat-window { border: 3px solid #444; background: rgba(30, 30, 30, 0.95); padding: 20px; box-shadow: 0 0 20px #000; }
         .chat-entry { margin-bottom: 20px; padding: 15px; border-radius: 8px; font-size: 1em; line-height: 1.4; }
-        
+
         .donut { border-left: 8px solid #ff69b4; background: #3d1a2b; }
         .mordecai { border-left: 8px solid #00d4ff; background: #1a2b3d; }
         .quasar { border-left: 8px solid #ffcc00; background: #3d351a; }
@@ -78,7 +78,7 @@
         <div class="header">!!! NEW ACHIEVEMENT !!!</div>
         <div class="achievement">"CON-FLOOR SURVIVOR"</div>
         <p>YOU DID IT! You’ve successfully navigated the <strong>ATLANTA SKYBRIDGE GAUNTLET</strong>! You have survived the humidity, the smell of burnt rubber and expensive polyester, and the sheer, unadulterated chaos of sixty-thousand humans trying to occupy the same square inch of hotel carpet! IT IS A MIRACLE YOU HAVEN'T BEEN CRUSHED!</p>
-        
+
         <p class="ai-snark">REWARD: You’ve received a [Platinum] Badge Ribbon! It grants you +5 to Crowd Maneuvering and -10 to Personal Space. Also, Carl, look at the feet on these people! There are thousands of them! Thousands of feet in sandals and boots and... oh, look at that one! That’s a good one! WAIT, STOP! I'M SUPPOSED TO BE RUNNING A DUNGEON! GET BACK TO THE MESH!</p>
     </div>
 
@@ -100,7 +100,7 @@
 
         <div class="chat-entry mordecai">
             <span class="username">Mordecai (Manager)</span>
-            Stop screaming! Prepotente, the elevators have been broken since the tenth floor—just use the ramp. Katia, stay behind Carl. Donut, for the last time, you cannot annex the Hilton Ballroom. Crawler, keep that signal steady! We need a clear link before the Skybridge becomes a total chokepoint. 
+            Stop screaming! Prepotente, the elevators have been broken since the tenth floor—just use the ramp. Katia, stay behind Carl. Donut, for the last time, you cannot annex the Hilton Ballroom. Crawler, keep that signal steady! We need a clear link before the Skybridge becomes a total chokepoint.
         </div>
 
         <div class="chat-entry quasar">
@@ -114,15 +114,27 @@
         </div>
     </div>
 
+    <div class="chat-entry crawler-gen" style="border-left: 6px solid #ffcc00; background: #221e00;">
+        <span class="username" style="color: #ffcc00;">[ LIVE FLOOR STATUS: SECTOR ATLANTA ]</span>
+        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9em;">
+            <li>🔸 ELEVATORS: [CRITICAL FAILURE] - USE STAIRS OR TELEPORT</li>
+            <li>🔸 HUMIDITY: 98% [SWAMP CONDITIONS DETECTED]</li>
+            <li>🔸 HYDRATION: [WARNING] - PIZZA IS NOT A REPLACEMENT FOR WATER</li>
+            <li>🔸 MESH STATUS: [OPTIMAL] - NODE !1fcff30a ACTIVE</li>
+        </ul>
+    </div>
+
     <div class="nfc-hint">
         [ SYSTEM WARNING: PROXIMITY SCAN DETECTED. TAP CHIP FOR UNSTABLE DATA UPLOAD ]
     </div>
 
     <div class="node-footer">
-        <strong style="color: #00ff00; font-size: 1.4em;">[ DRAGON CON MESH ACTIVE ]</strong><br>
-        <span style="color: #888;">NODE ID: !1fcff30a</span><br>
+        <strong style="color: #00ff00; font-size: 1.2em;">[ OFF-GRID COMMUNICATIONS ]</strong><br>
+        <p style="font-size: 0.85em; color: #ccc; margin: 10px 0;">
+            If you have a Meshtastic device, tap below to add <strong>obi-wan-kemeshi</strong> and send a Direct Message over the local mesh.
+        </p>
         <a href="https://meshtastic.org/v/#CIrmv_4BElAKCSExZmNmZjMwYRIPb2JpLXdhbi1rZW1lc2hpGgRmMzBhIgbFMx_P8wooWEIgx5cjLfBcMK-Y-ZG_cuCi_jPojvkJoYq-P1lXSvX0YHxIAA" class="button">
-            JOIN THE MESH
+            SEND DIRECT MESSAGE
         </a>
     </div>
 
