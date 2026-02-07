@@ -3,32 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dungeon World Chat - Dragon Con Sector</title>
+    <title>Dungeon World Chat - Sector 404</title>
     <style>
-        body { background-color: #050505; color: #f0f0f0; font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 850px; margin: auto; }
+        /* Base Styles & Mobile-First Design */
+        body {
+            background-color: #050505;
+            color: #f0f0f0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 10px;
+            max-width: 850px;
+            margin: auto;
+            -webkit-font-smoothing: antialiased;
+        }
 
+        /* Achievement Box - High Energy Theme */
         .system-ai {
             background: linear-gradient(180deg, #990000 0%, #300000 100%);
-            border: 5px solid #ff4500;
-            padding: 25px;
+            border: 4px solid #ff4500;
+            padding: 20px;
             margin-bottom: 25px;
-            box-shadow: 0 0 40px #ff4500;
+            box-shadow: 0 0 30px #ff4500;
         }
-        .header { color: #ffcc00; font-weight: bold; font-size: 2.2em; text-transform: uppercase; text-shadow: 3px 3px #000; }
-        .achievement { color: #fff; font-size: 1.6em; font-weight: bold; margin: 10px 0; border-bottom: 2px solid #ff4500; }
-        .ai-snark { color: #ffa500; font-style: italic; font-weight: bold; font-size: 1.1em; }
+        .header {
+            color: #ffcc00;
+            font-weight: bold;
+            font-size: 1.8em;
+            text-transform: uppercase;
+            text-shadow: 2px 2px #000;
+            line-height: 1.1;
+        }
+        .achievement {
+            color: #fff;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 10px 0;
+            border-bottom: 2px solid #ff4500;
+            padding-bottom: 5px;
+        }
+        .ai-snark { color: #ffa500; font-style: italic; font-weight: bold; font-size: 1em; line-height: 1.4; }
 
-        .chat-window { border: 3px solid #444; background: rgba(30, 30, 30, 0.95); padding: 20px; box-shadow: 0 0 20px #000; }
-        .chat-entry { margin-bottom: 20px; padding: 15px; border-radius: 8px; font-size: 1em; line-height: 1.4; }
+        /* Chat UI - Stacked for Mobile Phones */
+        .chat-window { border: 2px solid #444; background: rgba(20, 20, 20, 0.95); padding: 12px; }
+        .chat-entry {
+            margin-bottom: 18px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
 
-        .donut { border-left: 8px solid #ff69b4; background: #3d1a2b; }
-        .mordecai { border-left: 8px solid #00d4ff; background: #1a2b3d; }
-        .quasar { border-left: 8px solid #ffcc00; background: #3d351a; }
-        .casandra { border-left: 8px solid #00ff00; background: #1a3d25; }
-        .prepotente { border-left: 8px solid #fdfd96; background: #3d3d1a; }
-        .katia { border-left: 8px solid #00ffff; background: #1a3d3d; }
+        .donut { border-left: 6px solid #ff69b4; background: #2b121e; }
+        .mordecai { border-left: 6px solid #00d4ff; background: #121c2b; }
+        .quasar { border-left: 6px solid #ffcc00; background: #2b2512; }
+        .casandra { border-left: 6px solid #00ff00; background: #122b1a; }
+        .prepotente { border-left: 6px solid #fdfd96; background: #2b2b12; }
+        .katia { border-left: 6px solid #00ffff; background: #122b2b; }
 
-        .username { font-weight: bold; display: block; margin-bottom: 8px; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; }
+        .username { font-weight: bold; display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; }
         .donut .username { color: #ff69b4; }
         .mordecai .username { color: #00d4ff; }
         .quasar .username { color: #ffcc00; }
@@ -36,39 +67,72 @@
         .prepotente .username { color: #fdfd96; }
         .katia .username { color: #00ffff; }
 
-        .nfc-hint {
+        /* Floor Status Styles */
+        .floor-status {
             margin-top: 25px;
             padding: 15px;
+            border-left: 6px solid #ffcc00;
+            background: #221e00;
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+        .status-header {
+            color: #ffcc00;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .status-list { list-style: none; padding: 0; margin: 0; }
+        .status-list li { margin-bottom: 5px; }
+
+        /* NFC Blinking Hint */
+        .nfc-hint {
+            margin-top: 20px;
+            padding: 12px;
             border: 2px solid #ffcc00;
-            background: #443300;
-            color: #ffffff;
+            background: #221a00;
+            color: #ffcc00;
             font-weight: bold;
             text-align: center;
-            font-size: 1em;
-            text-shadow: 1px 1px #000;
-            animation: blink 1.5s infinite;
+            font-size: 0.9em;
+            animation: blink 2s infinite;
         }
-        @keyframes blink { 0% { opacity: 1; border-color: #ffcc00; } 50% { opacity: 0.7; border-color: #fff; } 100% { opacity: 1; border-color: #ffcc00; } }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
+        /* Footer & Interactive Elements */
         .node-footer {
-            margin-top: 30px;
-            border: 3px solid #00ff00;
-            padding: 25px;
+            margin-top: 25px;
+            border: 2px solid #00ff00;
+            padding: 20px;
             text-align: center;
             background: #000;
-            box-shadow: 0 0 15px #00ff00;
         }
         .button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 18px 36px;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 15px;
+            padding: 16px;
             background-color: #00ff00;
             color: #000;
             font-weight: bold;
             text-decoration: none;
             text-transform: uppercase;
-            font-size: 1.2em;
-            border-radius: 5px;
+            font-size: 1.1em;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Desktop Adjustments */
+        @media (min-width: 600px) {
+            body { padding: 30px; }
+            .header { font-size: 2.2em; }
+            .achievement { font-size: 1.6em; }
+            .button { width: auto; display: inline-block; padding: 15px 40px; }
+            .chat-entry { font-size: 1em; }
         }
     </style>
 </head>
@@ -78,48 +142,48 @@
         <div class="header">!!! NEW ACHIEVEMENT !!!</div>
         <div class="achievement">"CON-FLOOR SURVIVOR"</div>
         <p>YOU DID IT! You’ve successfully navigated the <strong>ATLANTA SKYBRIDGE GAUNTLET</strong>! You have survived the humidity, the smell of burnt rubber and expensive polyester, and the sheer, unadulterated chaos of sixty-thousand humans trying to occupy the same square inch of hotel carpet! IT IS A MIRACLE YOU HAVEN'T BEEN CRUSHED!</p>
-
         <p class="ai-snark">REWARD: You’ve received a [Platinum] Badge Ribbon! It grants you +5 to Crowd Maneuvering and -10 to Personal Space. Also, Carl, look at the feet on these people! There are thousands of them! Thousands of feet in sandals and boots and... oh, look at that one! That’s a good one! WAIT, STOP! I'M SUPPOSED TO BE RUNNING A DUNGEON! GET BACK TO THE MESH!</p>
     </div>
 
     <div class="chat-window">
         <div class="chat-entry donut">
-            <span class="username">Princess Donut Lvl 50 Queen Anne Chinchilla</span>
-            CARL! DID YOU SEE THAT? A CRAWLER JUST TRIPPED OVER HIS OWN CAPE IN THE MARRIOTT LOBBY! MONGO IS APPALLED! ABSOLUTELY APPALLED! WHY IS NO ONE PAYING ATTENTION TO ME? I AM WEARING MY ROYAL TIARA AND ALL THESE PEOPLE ARE LOOKING AT A MAN IN A SPANDEX ONESIE! TELL THE NETWORK ADMIN TO BROADCAST MY IMAGE ON EVERY SCREEN IN THE HYATT IMMEDIATELY!
+            <span class="username">Princess Donut Lvl 50 Queen Anne Chinchilla Persian</span>
+            CARL! MONGO IS APPALLED! WHY ARE ALL THESE PEOPLE LOOKING AT A MAN IN A SPANDEX ONESIE? TELL THE NETWORK ADMIN TO BROADCAST MY IMAGE ON EVERY SCREEN IN THE HYATT IMMEDIATELY!
         </div>
 
         <div class="chat-entry prepotente">
             <span class="username">Prepotente (Pony Extraordinaire)</span>
-            AAAAAAAAAAHHHHHH! THE ELEVATOR IS FULL! MOTHER SAYS WE MUST WAIT FOR THE THIRD SERVICE LIFT OR WE WILL BE TRAMPLED! AAAAAAAAAAHHHHHHH! WHY ARE THERE SO MANY STAIRS? I AM NOT EQUIPPED FOR STAIRS! AAAAAAAAAAHHHHHHH!
+            AAAAAAAAAAHHHHHH! MOTHER! THE ELEVATORS ARE A BORANT CONSPIRACY! THEY WANT US TO STARVE ON THE SKYBRIDGE! AAAAAAAAAAHHHHHHH!
         </div>
 
         <div class="chat-entry katia">
             <span class="username">Katia (Level 42 Tank)</span>
-            Okay, Carl, I’ve found a path through the food court, but it’s guarded by a Level 60 'Line for Pizza.' We need to use this mesh node to coordinate the bypass. If we don't move now, we’re going to be stuck behind the parade for the next three hours! Admin, give us the quickest route to the Hilton!
+            Carl, I’ve found a path through the food court, but it’s guarded by a Level 60 'Line for Pizza.' We need to use this mesh node to coordinate the bypass!
         </div>
 
         <div class="chat-entry mordecai">
             <span class="username">Mordecai (Manager)</span>
-            Stop screaming! Prepotente, the elevators have been broken since the tenth floor—just use the ramp. Katia, stay behind Carl. Donut, for the last time, you cannot annex the Hilton Ballroom. Crawler, keep that signal steady! We need a clear link before the Skybridge becomes a total chokepoint.
+            Stop screaming! Prepotente, the elevators have been broken since the tenth floor. Crawler, keep that signal steady! We need a clear link before the Skybridge becomes a total chokepoint.
         </div>
 
         <div class="chat-entry quasar">
             <span class="username">Quasar (Legal Counsel/Certified Genius)</span>
-            CHOKEPOINT? If that fire marshal tries to limit the capacity of this hallway, I'll sue the very concept of occupancy! I’ll sue the bricks! I’ll sue the architect's great-grandchildren! CRAWLER, YOUR RIGHT TO STAND IN THIS CROWDED HALLWAY IS CONSTITUTIONALLY PROTECTED BY ME!
+            CHOKEPOINT? I’ll sue the very concept of occupancy! I’ll sue the bricks! CRAWLER, YOUR RIGHT TO STAND IN THIS CROWDED HALLWAY IS CONSTITUTIONALLY PROTECTED BY ME!
         </div>
 
         <div class="chat-entry casandra">
             <span class="username">Casandra (Exasperated Operations)</span>
-            EVERYONE SHUT UP! We have a breach in the vendor hall and you’re all complaining about elevators! Crawler, listen to me: keep the mesh open. If I lose my tactical overview because you were too busy looking at cosplayers, I will personally throw you into the waste-disposal unit!
+            EVERYONE SHUT UP! Crawler, keep the mesh open. If I lose my tactical overview because you were too busy looking at cosplayers, I will personally rewrite your respawn protocol!
         </div>
     </div>
 
-    <div class="chat-entry crawler-gen" style="border-left: 6px solid #ffcc00; background: #221e00;">
-        <span class="username" style="color: #ffcc00;">[ LIVE FLOOR STATUS: SECTOR ATLANTA ]</span>
-        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9em;">
+    <div class="floor-status">
+        <span class="status-header">[ LIVE FLOOR STATUS: SECTOR ATLANTA ]</span>
+        <ul class="status-list">
             <li>🔸 ELEVATORS: [CRITICAL FAILURE] - USE STAIRS OR TELEPORT</li>
             <li>🔸 HUMIDITY: 98% [SWAMP CONDITIONS DETECTED]</li>
             <li>🔸 HYDRATION: [WARNING] - PIZZA IS NOT A REPLACEMENT FOR WATER</li>
+            <li>🔸 CARPET: [MEMETIC HAZARD] - DO NOT STARE DIRECTLY AT THE PATTERN</li>
             <li>🔸 MESH STATUS: [OPTIMAL] - NODE !1fcff30a ACTIVE</li>
         </ul>
     </div>
@@ -129,14 +193,74 @@
     </div>
 
     <div class="node-footer">
-        <strong style="color: #00ff00; font-size: 1.2em;">[ OFF-GRID COMMUNICATIONS ]</strong><br>
-        <p style="font-size: 0.85em; color: #ccc; margin: 10px 0;">
-            If you have a Meshtastic device, tap below to add <strong>obi-wan-kemeshi</strong> and send a Direct Message over the local mesh.
-        </p>
+        <strong style="color: #00ff00; font-size: 1.2em;">[ DRAGON CON MESH ACTIVE ]</strong><br>
+        <span style="color: #888;">NODE ID: !1fcff30a</span><br>
         <a href="https://meshtastic.org/v/#CIrmv_4BElAKCSExZmNmZjMwYRIPb2JpLXdhbi1rZW1lc2hpGgRmMzBhIgbFMx_P8wooWEIgx5cjLfBcMK-Y-ZG_cuCi_jPojvkJoYq-P1lXSvX0YHxIAA" class="button">
-            SEND DIRECT MESSAGE
+            JOIN THE MESH
         </a>
     </div>
 
+    <div id="generator-box" class="system-ai" style="margin-top: 30px; border-style: dashed; background: #220000;">
+        <div id="custom-header" class="header" style="font-size: 1.4em;">SYSTEM READY...</div>
+        <div id="custom-title" class="achievement">"TAP FOR FATE"</div>
+        <p id="custom-body" style="font-size: 0.9em;">Click below to generate a useless achievement based on your level of survival.</p>
+        <button onclick="generateAchievement()" class="button" style="background-color: #ff4500; color: white;">
+            GENERATE ACHIEVEMENT
+        </button>
+    </div>
+
+    <script>
+        function generateAchievement() {
+    const adjectives = [
+        "Legendary", "Decrepit", "Glistening", "Appalled", "Celestial", "Malfunctioning", "Stinky",
+        "Exasperated", "Damp", "Unhinged", "Slime-Covered", "Deep-Fried", "Aggressive", "Sentient",
+        "Copyright-Infringing", "Sticky", "Over-Hyped", "Subterranean", "God-Tier", "Bourgeois"
+    ];
+    const nouns = [
+        "Skybridge", "Tiara", "Oats", "Packet", "Llama", "Cosplayer", "Holocron", "Badge",
+        "Pizza-Crust", "Elevator", "Con-Crud", "Badge-Ribbon", "Spandex-Onesie", "Service-Lift",
+        "Foot-Photo", "Floor-Boss", "Vendor-Hall", "Swag-Bag", "Safety-Pin", "Energy-Drink"
+    ];
+    const verbs = [
+        "Wrangled", "Evaded", "Glurped", "Sued", "Screamed", "Infiltrated", "Buffering",
+        "Ignored", "Sniffed", "Acquired", "Dismantled", "Out-Manuevered", "Accidentally-Ate",
+        "Teleported", "Bribed", "Disrespected", "Over-Clocked", "Looted", "Extorted", "Pet"
+    ];
+    const bodies = [
+        "You have ${action} a ${noun} in a way that makes the AI very uncomfortable.",
+        "Against all odds, you successfully ${action} a ${noun} without causing a sector-wide reset.",
+        "The System is confused as to why you ${action} that ${noun}, but it's giving you a reward anyway.",
+        "By ${action} a ${noun}, you have officially peaked. It's all downhill from here, Crawler.",
+        "You just ${action} a ${noun}. Mordecai is sighing so hard he might actually pass out.",
+        "Congratulations! You ${action} a ${noun} and didn't immediately die. That's a first!",
+        "The AI noticed you ${action} a ${noun}. It's currently writing a very creepy poem about it."
+    ];
+    const rewards = [
+        "A Common Quality Cotton Sock.",
+        "Priority Elevator Access (Still Broken).",
+        "A Signed Photo of Mongo.",
+        "+5 to Humidity Resistance.",
+        "A Lifetime Supply of Cold Hot Dogs.",
+        "A commemorative pin that says 'I Tried'.",
+        "A Level 1 'Cardboard Cosplay' Kit.",
+        "One (1) singular, luke-warm chicken wing.",
+        "A 5-minute head start before the Security Golems arrive.",
+        "The ability to speak 'Pony' fluently for 10 seconds."
+    ];
+
+    const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const noun = nouns[Math.floor(Math.random() * nouns.length)];
+    const action = verbs[Math.floor(Math.random() * verbs.length)];
+    const bodyTemplate = bodies[Math.floor(Math.random() * bodies.length)];
+    const reward = rewards[Math.floor(Math.random() * rewards.length)];
+
+    const randomTitle = `"${adj} ${noun}"`;
+    const dynamicBody = bodyTemplate.replace('${action}', action).replace('${noun}', noun);
+
+    document.getElementById('custom-header').innerText = "NEW ACHIEVEMENT!";
+    document.getElementById('custom-title').innerText = randomTitle;
+    document.getElementById('custom-body').innerText = `${dynamicBody}\n\nREWARD: ${reward}`;
+}
+    </script>
 </body>
 </html>
