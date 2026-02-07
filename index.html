@@ -3,95 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Achievement Unlocked</title>
+    <title>Dungeon World Chat - Sector 404</title>
     <style>
-        body {
-            background-color: #0d0d0d;
-            color: #f0f0f0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 30px;
-            max-width: 700px;
-            margin: auto;
-            border: 4px double #4a4a4a;
-        }
-        .achievement-box {
-            background: linear-gradient(180deg, #3a0000 0%, #1a0000 100%);
-            border: 2px solid #ff4500;
+        body { background-color: #050505; color: #f0f0f0; font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 850px; margin: auto; }
+        
+        .system-ai {
+            background: linear-gradient(180deg, #660000 0%, #200000 100%);
+            border: 4px solid #ff4500;
             padding: 20px;
-            box-shadow: 0 0 15px #ff4500;
+            margin-bottom: 25px;
+            box-shadow: 0 0 30px #ff4500;
         }
-        .header {
-            color: #ffcc00;
-            font-weight: bold;
-            font-size: 1.8em;
-            text-shadow: 2px 2px #000;
-            margin-bottom: 5px;
-        }
-        .achievement-name {
-            color: #ffffff;
-            font-size: 1.4em;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-        }
-        .flavor-text {
-            color: #e0e0e0;
-            font-style: italic;
-            margin-bottom: 20px;
-        }
-        .mordecai-section {
-            background-color: #1e2a3a;
-            border-left: 5px solid #007bff;
-            padding: 15px;
-            margin: 25px 0;
-        }
-        .mordecai-label {
-            color: #00d4ff;
-            font-weight: bold;
-            font-size: 0.9em;
-            text-transform: uppercase;
-        }
-        .node-info {
-            background-color: #111;
-            border: 1px dashed #00ff00;
-            padding: 15px;
+        .header { color: #ffcc00; font-weight: bold; font-size: 2em; text-transform: uppercase; }
+        .achievement { color: #fff; font-size: 1.4em; font-weight: bold; margin: 10px 0; border-bottom: 1px solid #ff4500; }
+        .ai-snark { color: #ffa500; font-style: italic; font-weight: bold; }
+
+        .chat-window { border: 2px solid #333; background: rgba(20, 20, 20, 0.95); padding: 15px; }
+        .chat-entry { margin-bottom: 18px; padding: 12px; border-radius: 4px; font-size: 0.95em; }
+        
+        .donut { border-left: 6px solid #ff69b4; background: #2b121e; }
+        .mordecai { border-left: 6px solid #00d4ff; background: #121c2b; }
+        .zev { border-left: 6px solid #cc00ff; background: #1e122b; }
+        .quasar { border-left: 6px solid #ffcc00; background: #2b2512; }
+        .casandra { border-left: 6px solid #00ff00; background: #122b1a; }
+        .fan { border-left: 6px solid #ffffff; background: #333333; border-style: dashed; }
+
+        .username { font-weight: bold; display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.85em; }
+        .donut .username { color: #ff69b4; }
+        .mordecai .username { color: #00d4ff; }
+        .zev .username { color: #cc00ff; }
+        .quasar .username { color: #ffcc00; }
+        .casandra .username { color: #00ff00; }
+        .fan .username { color: #ffffff; }
+
+        .node-footer {
+            margin-top: 25px;
+            border: 2px solid #00ff00;
+            padding: 20px;
             text-align: center;
+            background: #000;
         }
         .button {
             display: inline-block;
             margin-top: 15px;
-            padding: 10px 20px;
+            padding: 15px 30px;
             background-color: #00ff00;
             color: #000;
             font-weight: bold;
             text-decoration: none;
-            border-radius: 3px;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-    <div class="achievement-box">
+    <div class="system-ai">
         <div class="header">NEW ACHIEVEMENT!</div>
-        <div class="achievement-name">"The Packet-Wrangling Wizard"</div>
-
-        <p class="flavor-text">
-            While most crawlers are busy trying to figure out which end of a sword is the pointy bit, you've located a legendary entity capable of manifesting invisible signals from the ether. They call themselves a "Network Administrator."
-        </p>
-
-        <p><strong>REWARD:</strong> You've gained the favor of a specialized support class! You now have access to a node that probably has better uptime than your current life expectancy. 10 points to Intelligence! 0 points to Charisma (let's be realistic).</p>
+        <div class="achievement">"THE PACKET PATHFINDER"</div>
+        <p>You’ve tracked down a <strong>Network Administrator</strong> who has actually managed to keep a signal alive in a building full of concrete, lead paint, and thousands of sweaty crawlers. This is a statistical impossibility. I’m impressed. And a little annoyed.</p>
+        
+        <p class="ai-snark">REWARD: You’ve received a [Legendary] Bandwidth Token! It's completely non-transferable and has no actual value, much like a degree in Liberal Arts. Also, I’ve noticed this Crawler isn't even wearing open-toed sandals. What is wrong with you people? It’s a convention! Let those little piggies breathe, Carl! No? Fine. Be that way. Enjoy your packets.</p>
     </div>
 
-    <div class="mordecai-section">
-        <span class="mordecai-label">Manager's Log - Mordecai:</span>
-        <p>"Honestly, Carl, it’s a miracle you haven't tripped over your own feet and deleted the local mesh network entirely. This Crawler—this *Network Nomad*—is a professional. He deals with routing tables and subnets, things your tiny brain couldn't possibly comprehend. Do try to be polite. Don't touch his gear, don't spill your juice on his terminal, and for heaven's sake, keep your husky from shedding on the hardware."</p>
+    <div class="chat-window">
+        <div class="chat-entry donut">
+            <span class="username">Princess Donut Lvl 50 Queen Anne Chinchilla</span>
+            CARL! MONGO IS APPALLED. ABSOLUTELY APPALLED! HE JUST SAW A CRAWLER EATING A COLD HOT DOG IN THE STAIRWELL. IT WAS DISGRACEFUL! AND WHY IS THIS TECH-PERSON BROADCASTING SO LOUDLY? HE SHOULD BE USING HIS SKILLS TO ENSURE MY SOCIAL MEDIA FEED HAS 100% UPTIME. TELL HIM TO ALLOCATE ALL RESOURCES TO THE PRINCESS IMMEDIATELY!
+        </div>
+
+        <div class="chat-entry mordecai">
+            <span class="username">Mordecai (Manager)</span>
+            Donut, the 'tech-person' is a Network Administrator. He's the only reason you can even see your feed right now. Carl, look at the Node ID. This is stable hardware. If you’d spent five minutes learning about subnets instead of figuring out how to blow up the plumbing, we might actually be ahead of schedule.
+        </div>
+
+        <div class="chat-entry quasar">
+            <span class="username">Quasar (Legal Counsel/Certified Genius)</span>
+            I’ve looked over the signal protocols! If any of these convention 'security' goons try to seize your mesh-node as 'unauthorized equipment,' you tell them to talk to me! I’ll file an injunction so fast their heads will spin! I’ll sue the FCC! I’ll sue the very concept of the electromagnetic spectrum!
+        </div>
+
+        <div class="chat-entry zev">
+            <span class="username">Zev (Heavens' Marketing)</span>
+            The signal from !1fcff30a is perfect! The sponsors are loving this 'underground comms' vibe. It’s very gritty. Can we get some shots of the wiring? The fans in the outer rings love a good cable-management setup. It’s very 'professional crawler' chic.
+        </div>
+
+        <div class="chat-entry casandra">
+            <span class="username">Casandra (Exasperated Operations)</span>
+            Can everyone stop talking about cable management for five seconds? We have three floor-bosses converging on the Hyatt and you’re all worried about signal strength. Crawler, just keep the mesh open. If we lose the link to the surface, I'm holding you personally responsible.
+        </div>
+
+        <div class="chat-entry fan">
+            <span class="username">An Enthusiastic Fan</span>
+            OH MY GOD IS THAT THE NETWORK NOMAD?? I READ ABOUT HIM ON THE BOARDS! CAN YOU FIX MY SMARTPHONE? IT’S BEEN DEAD SINCE THE DUNGEON OPENED! I LOVE YOUR MESH NODE!! GLURP GLURP!!
+        </div>
     </div>
 
-    <div class="node-info">
-        <strong>NODE IDENTITY: !1fcff30a</strong><br>
+    <div class="node-footer">
+        <strong style="color: #00ff00; font-size: 1.2em;">[ MESH FREQUENCY ACQUIRED ]</strong><br>
+        <span style="color: #888;">NODE ID: !1fcff30a</span><br>
         <a href="https://meshtastic.org/v/#CIrmv_4BElAKCSExZmNmZjMwYRIPb2JpLXdhbi1rZW1lc2hpGgRmMzBhIgbFMx_P8wooWEIgx5cjLfBcMK-Y-ZG_cuCi_jPojvkJoYq-P1lXSvX0YHxIAA" class="button">
-            ADD TO MESH CONTACTS
+            JOIN THE MESH
         </a>
     </div>
 
