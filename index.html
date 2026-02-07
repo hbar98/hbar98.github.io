@@ -149,10 +149,10 @@
     <div class="floor-status">
         <span class="status-header">[ LIVE FLOOR STATUS: SECTOR ATLANTA ]</span>
         <ul class="status-list">
-            <li>🔸 ELEVATORS: [CRITICAL FAILURE] - USE STAIRS OR TELEPORT</li>
-            <li>🔸 HUMIDITY: 98% [SWAMP CONDITIONS DETECTED]</li>
+            <li>🔸 ELEVATORS: [CRITICAL FAILURE] - USE STAIRS</li>
+            <li>🔸 HUMIDITY: 98% [SWAMP CONDITIONS]</li>
             <li>🔸 HYDRATION: [WARNING] - PIZZA IS NOT A REPLACEMENT FOR WATER</li>
-            <li>🔸 CARPET: [MEMETIC HAZARD] - DO NOT STARE DIRECTLY AT THE PATTERN</li>
+            <li>🔸 CARPET: [MEMETIC HAZARD] - DO NOT STARE AT PATTERN</li>
             <li>🔸 MESH STATUS: [OPTIMAL] - NODE !1fcff30a ACTIVE</li>
         </ul>
     </div>
@@ -166,8 +166,7 @@
     <div id="gen-container" class="system-ai" style="margin-top: 30px; border-style: dashed; background: #220000;">
         <div id="custom-header" class="header" style="font-size: 1.4em;">SYSTEM READY...</div>
         <div id="custom-title" class="achievement">"TAP FOR FATE"</div>
-        <p id="custom-body" style="font-size: 0.9em;">Click below to generate a useless achievement.</p>
-
+        <p id="custom-body" style="font-size: 0.9em;">Generate a useless achievement based on your level of survival.</p>
         <button onclick="generateAchievement()" class="button" style="background-color: #ff4500; color: white;">GENERATE ACHIEVEMENT</button>
 
         <div id="share-options">
@@ -181,13 +180,11 @@
         </div>
     </div>
 
-    <div class="chat-window" style="margin-top: 25px; border-color: #00ff00;">
+    <div class="chat-window" style="margin-top: 25px; border-color: #00ff00; margin-bottom: 25px;">
         <span class="username" style="color: #00ff00;">[ VOODOO BOARD: SECTOR ATLANTA ]</span>
-
         <div id="voodoo-feed" style="height: 200px; overflow-y: auto; background: #000; padding: 10px; font-family: monospace; font-size: 0.85em; border: 1px solid #333; margin-bottom: 10px; color: #00ff00;">
             SYSTEM: INITIALIZING VOODOO FEED...
         </div>
-
         <div style="display: flex; flex-direction: column; gap: 8px;">
             <input type="text" id="voodoo-name" placeholder="[ CRAWLER DESIGNATION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 10px; font-family: monospace;">
             <textarea id="voodoo-msg" placeholder="[ UNENCRYPTED BURST TRANSMISSION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 10px; font-family: monospace; height: 60px;"></textarea>
@@ -197,6 +194,11 @@
 
     <script>
         let currentTitle = "";
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7ljyRllZ4a0OYp3B7Nrfw3Bn3QUMsXrUtJ44RlnDUk9fL8I0AyeocNrw1jXLbnDK6wg/exec';
+
+        window.onload = function() {
+            loadVoodooMessages();
+        };
 
         function generateAchievement() {
             const adjectives = ["Legendary", "Decrepit", "Glistening", "Appalled", "Celestial", "Malfunctioning", "Stinky", "Exasperated", "Unhinged", "Copyright-Infringing", "God-Tier", "Sticky", "Slime-Covered", "Aggressive"];
@@ -232,7 +234,7 @@
 
             const container = document.getElementById('gen-container');
             container.classList.remove('glitch', 'rarity-common', 'rarity-legendary', 'rarity-celestial');
-            void container.offsetWidth;
+            void container.offsetWidth; 
             container.classList.add('glitch');
 
             const rarity = pick(["rarity-common", "rarity-legendary", "rarity-celestial"]);
@@ -242,7 +244,6 @@
             document.getElementById('custom-header').innerText = "NEW ACHIEVEMENT!";
             document.getElementById('custom-title').innerText = `"${currentTitle}"`;
             document.getElementById('custom-body').innerText = `${pick(bodies)}\n\nREWARD: ${reward}`;
-
             document.getElementById('share-options').style.display = 'block';
         }
 
@@ -250,17 +251,9 @@
             return `I just earned the "${currentTitle}" achievement at Dragon Con! Don't tell Mordecai: hbar98.github.io #DragonCon #DCC`;
         }
 
-        function shareX() {
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getShareText())}`, '_blank');
-        }
-
-        function shareBlueSky() {
-            window.open(`https://bsky.app/intent/compose?text=${encodeURIComponent(getShareText())}`, '_blank');
-        }
-
-        function shareThreads() {
-            window.open(`https://www.threads.net/intent/post?text=${encodeURIComponent(getShareText())}`, '_blank');
-        }
+        function shareX() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getShareText())}`, '_blank'); }
+        function shareBlueSky() { window.open(`https://bsky.app/intent/compose?text=${encodeURIComponent(getShareText())}`, '_blank'); }
+        function shareThreads() { window.open(`https://www.threads.net/intent/post?text=${encodeURIComponent(getShareText())}`, '_blank'); }
 
         function copyToClipboard(e) {
             navigator.clipboard.writeText(getShareText()).then(() => {
@@ -271,14 +264,8 @@
             });
         }
 
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7ljyRllZ4a0OYp3B7Nrfw3Bn3QUMsXrUtJ44RlnDUk9fL8I0AyeocNrw1jXLbnDK6wg/exec';
-
-        window.onload = function() {
-            loadVoodooMessages();
-        };
-
         function loadVoodooMessages() {
-            fetch(SCRIPT_URL)
+            fetch(SCRIPT_URL, { method: "GET", redirect: "follow" })
             .then(res => res.json())
             .then(data => {
                 const feed = document.getElementById('voodoo-feed');
@@ -290,7 +277,7 @@
                     feed.appendChild(entry);
                 });
             })
-            .catch(err => {
+            .catch(() => {
                 document.getElementById('voodoo-feed').innerHTML = "SYSTEM ERROR: UNABLE TO RETRIEVE FEED.";
             });
         }
@@ -313,9 +300,7 @@
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formData.toString()
             })
             .then(() => {
@@ -324,7 +309,7 @@
                 setTimeout(loadVoodooMessages, 1500);
                 setTimeout(() => { btn.innerText = "[ BROADCAST TO SECTOR ]"; }, 3000);
             })
-            .catch(err => {
+            .catch(() => {
                 btn.innerText = "[ TRANSMISSION FAILED ]";
                 setTimeout(() => { btn.innerText = "[ BROADCAST TO SECTOR ]"; }, 3000);
             });
