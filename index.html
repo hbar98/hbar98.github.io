@@ -221,20 +221,19 @@
         "Pizza-Crust", "Elevator", "Con-Crud", "Badge-Ribbon", "Spandex-Onesie", "Service-Lift",
         "Foot-Photo", "Floor-Boss", "Vendor-Hall", "Swag-Bag", "Safety-Pin", "Energy-Drink"
     ];
-    const verbs = [
-        "Wrangled", "Evaded", "Glurped", "Sued", "Screamed", "Infiltrated", "Buffering",
-        "Ignored", "Sniffed", "Acquired", "Dismantled", "Out-Manuevered", "Accidentally-Ate",
-        "Teleported", "Bribed", "Disrespected", "Over-Clocked", "Looted", "Extorted", "Pet"
+
+    // Split verbs into forms to ensure the sentences make grammatical sense
+    const verbsPast = [
+        "wrangled", "evaded", "glurped", "sued", "screamed at", "infiltrated", "buffered",
+        "ignored", "sniffed", "acquired", "dismantled", "out-maneuvered", "accidentally ate",
+        "teleported", "bribed", "disrespected", "over-clocked", "looted", "extorted", "petted"
     ];
-    const bodies = [
-        "You have ${action} a ${noun} in a way that makes the AI very uncomfortable.",
-        "Against all odds, you successfully ${action} a ${noun} without causing a sector-wide reset.",
-        "The System is confused as to why you ${action} that ${noun}, but it's giving you a reward anyway.",
-        "By ${action} a ${noun}, you have officially peaked. It's all downhill from here, Crawler.",
-        "You just ${action} a ${noun}. Mordecai is sighing so hard he might actually pass out.",
-        "Congratulations! You ${action} a ${noun} and didn't immediately die. That's a first!",
-        "The AI noticed you ${action} a ${noun}. It's currently writing a very creepy poem about it."
+    const verbsIng = [
+        "wrangling", "evading", "glurping", "suing", "screaming at", "infiltrating", "buffering",
+        "ignoring", "sniffing", "acquiring", "dismantling", "out-maneuvering", "accidentally eating",
+        "teleporting", "bribing", "disrespecting", "over-clocking", "looting", "extorting", "petting"
     ];
+
     const rewards = [
         "A Common Quality Cotton Sock.",
         "Priority Elevator Access (Still Broken).",
@@ -248,18 +247,32 @@
         "The ability to speak 'Pony' fluently for 10 seconds."
     ];
 
-    const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
-    const noun = nouns[Math.floor(Math.random() * nouns.length)];
-    const action = verbs[Math.floor(Math.random() * verbs.length)];
-    const bodyTemplate = bodies[Math.floor(Math.random() * bodies.length)];
-    const reward = rewards[Math.floor(Math.random() * rewards.length)];
+    // Helper to pick a random item
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const roll = Math.floor(Math.random() * verbsPast.length);
 
-    const randomTitle = `"${adj} ${noun}"`;
-    const dynamicBody = bodyTemplate.replace('${action}', action).replace('${noun}', noun);
+    const adj = pick(adjectives);
+    const noun = pick(nouns);
+    const vPast = verbsPast[roll];
+    const vIng = verbsIng[roll];
+    const reward = pick(rewards);
+
+    // Simple "A vs An" check for the noun
+    const article = /^[aeiou]/i.test(adj) ? "an" : "a";
+    const fullNoun = `${article} ${adj} ${noun}`;
+
+    const bodies = [
+        `You have ${vPast} ${fullNoun} in a way that makes the AI very uncomfortable.`,
+        `Against all odds, you successfully ${vPast} ${fullNoun} without causing a sector-wide reset.`,
+        `By ${vIng} ${fullNoun}, you have officially peaked. It's all downhill from here, Crawler.`,
+        `The AI noticed you ${vPast} ${fullNoun}. It's currently writing a very creepy poem about it.`,
+        `You just ${vPast} ${fullNoun}. Mordecai is sighing so hard he might actually pass out.`,
+        `Congratulations! You ${vPast} ${fullNoun} and didn't immediately die. That's a first!`
+    ];
 
     document.getElementById('custom-header').innerText = "NEW ACHIEVEMENT!";
-    document.getElementById('custom-title').innerText = randomTitle;
-    document.getElementById('custom-body').innerText = `${dynamicBody}\n\nREWARD: ${reward}`;
+    document.getElementById('custom-title').innerText = `"${adj} ${noun}"`;
+    document.getElementById('custom-body').innerText = `${pick(bodies)}\n\nREWARD: ${reward}`;
 }
     </script>
 </body>
