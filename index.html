@@ -6,61 +6,93 @@
     <title>Achievement Unlocked</title>
     <style>
         body {
-            background-color: #1a1a1a;
-            color: #ffcc00;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 40px;
-            line-height: 1.6;
-            max-width: 800px;
+            background-color: #0d0d0d;
+            color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 30px;
+            max-width: 700px;
             margin: auto;
-            border: 2px solid #333;
+            border: 4px double #4a4a4a;
+        }
+        .achievement-box {
+            background: linear-gradient(180deg, #3a0000 0%, #1a0000 100%);
+            border: 2px solid #ff4500;
+            padding: 20px;
+            box-shadow: 0 0 15px #ff4500;
         }
         .header {
-            color: #ff4500;
+            color: #ffcc00;
             font-weight: bold;
-            font-size: 1.5em;
+            font-size: 1.8em;
+            text-shadow: 2px 2px #000;
+            margin-bottom: 5px;
+        }
+        .achievement-name {
+            color: #ffffff;
+            font-size: 1.4em;
+            font-weight: bold;
             text-transform: uppercase;
-            border-bottom: 2px solid #ff4500;
+            letter-spacing: 2px;
             margin-bottom: 20px;
         }
-        .achievement-title {
-            color: #ffffff;
-            font-size: 1.2em;
+        .flavor-text {
+            color: #e0e0e0;
             font-style: italic;
+            margin-bottom: 20px;
         }
-        .mordecai-quote {
-            color: #a0a0a0;
-            font-style: italic;
-            margin-top: 30px;
-            border-left: 3px solid #555;
-            padding-left: 15px;
+        .mordecai-section {
+            background-color: #1e2a3a;
+            border-left: 5px solid #007bff;
+            padding: 15px;
+            margin: 25px 0;
+        }
+        .mordecai-label {
+            color: #00d4ff;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
         }
         .node-info {
-            background-color: #2a2a2a;
+            background-color: #111;
+            border: 1px dashed #00ff00;
             padding: 15px;
-            border-radius: 5px;
-            margin-top: 20px;
-            color: #00ff00;
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #00ff00;
+            color: #000;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">New Achievement!</div>
-    <div class="achievement-title">"The Iterative Architect"</div>
+    <div class="achievement-box">
+        <div class="header">NEW ACHIEVEMENT!</div>
+        <div class="achievement-name">"The Packet-Wrangling Wizard"</div>
 
-    <p>Congratulations, Crawler. You have successfully identified a Level 45 Network Administrator. While most of your peers are busy running into spike pits or failing to read basic instructions, you’ve managed to locate a node of genuine technical utility.</p>
+        <p class="flavor-text">
+            While most crawlers are busy trying to figure out which end of a sword is the pointy bit, you've located a legendary entity capable of manifesting invisible signals from the ether. They call themselves a "Network Administrator."
+        </p>
 
-    <p>This particular individual is responsible for the structural integrity of local data streams. It is a tedious, thankless job, but someone has to ensure the packets arrive on time while you're busy being... colorful.</p>
-
-    <div class="node-info">
-        <strong>REWARD: [Rare] Mesh Network Identification</strong><br>
-        Node ID: !1fcff30a<br>
-        Status: Verified Active
+        <p><strong>REWARD:</strong> You've gained the favor of a specialized support class! You now have access to a node that probably has better uptime than your current life expectancy. 10 points to Intelligence! 0 points to Charisma (let's be realistic).</p>
     </div>
 
-    <div class="mordecai-quote">
-        "Honestly, Carl, it’s refreshing to see a crawler interacting with a functional piece of hardware for once. Do try not to break it. And please, for the sake of the broadcast's dignity, at least attempt to look presentable when you're in the vicinity of the Marriott."
+    <div class="mordecai-section">
+        <span class="mordecai-label">Manager's Log - Mordecai:</span>
+        <p>"Honestly, Carl, it’s a miracle you haven't tripped over your own feet and deleted the local mesh network entirely. This Crawler—this *Network Nomad*—is a professional. He deals with routing tables and subnets, things your tiny brain couldn't possibly comprehend. Do try to be polite. Don't touch his gear, don't spill your juice on his terminal, and for heaven's sake, keep your husky from shedding on the hardware."</p>
+    </div>
+
+    <div class="node-info">
+        <strong>NODE IDENTITY: !1fcff30a</strong><br>
+        <a href="https://meshtastic.org/v/#CIrmv_4BElAKCSExZmNmZjMwYRIPb2JpLXdhbi1rZW1lc2hpGgRmMzBhIgbFMx_P8wooWEIgx5cjLfBcMK-Y-ZG_cuCi_jPojvkJoYq-P1lXSvX0YHxIAA" class="button">
+            ADD TO MESH CONTACTS
+        </a>
     </div>
 
 </body>
