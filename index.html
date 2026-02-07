@@ -90,7 +90,9 @@
             display: block; width: 100%; box-sizing: border-box; margin-top: 15px; padding: 16px;
             background-color: #00ff00; color: #000; font-weight: bold; text-decoration: none;
             text-transform: uppercase; font-size: 1.1em; border-radius: 4px; border: none; cursor: pointer;
+            transition: opacity 0.2s;
         }
+        .button:active { opacity: 0.7; }
 
         /* Share Options Styles */
         #share-options { display: none; margin-top: 15px; }
@@ -180,27 +182,35 @@
         </div>
     </div>
 
-    <div class="chat-window" style="margin-top: 25px; border-color: #00ff00; margin-bottom: 25px;">
-        <span class="username" style="color: #00ff00;">[ VOODOO BOARD: SECTOR ATLANTA ]</span>
-        <div id="voodoo-feed" style="height: 200px; overflow-y: auto; background: #000; padding: 10px; font-family: monospace; font-size: 0.85em; border: 1px solid #333; margin-bottom: 10px; color: #00ff00;">
+    <div class="chat-window" style="margin-top: 25px; border-color: #00ff00; margin-bottom: 50px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span class="username" style="color: #00ff00; margin: 0;">[ VOODOO BOARD: SECTOR ATLANTA ]</span>
+            <button onclick="loadVoodooMessages()" style="background: none; border: 1px solid #00ff00; color: #00ff00; font-size: 0.7em; padding: 2px 8px; cursor: pointer;">REFRESH</button>
+        </div>
+        
+        <div id="voodoo-feed" style="height: 250px; overflow-y: auto; background: #000; padding: 10px; font-family: monospace; font-size: 0.85em; border: 1px solid #333; margin-bottom: 15px; color: #00ff00;">
             SYSTEM: INITIALIZING VOODOO FEED...
         </div>
+
         <div style="display: flex; flex-direction: column; gap: 8px;">
-            <input type="text" id="voodoo-name" placeholder="[ CRAWLER DESIGNATION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 10px; font-family: monospace;">
-            <textarea id="voodoo-msg" placeholder="[ UNENCRYPTED BURST TRANSMISSION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 10px; font-family: monospace; height: 60px;"></textarea>
-            <button onclick="postToVoodoo()" class="button" style="margin: 0; padding: 10px; font-size: 0.9em;">[ BROADCAST TO SECTOR ]</button>
+            <input type="text" id="voodoo-name" placeholder="[ CRAWLER DESIGNATION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 10px; font-family: monospace; width: 100%; box-sizing: border-box;">
+            <textarea id="voodoo-msg" placeholder="[ UNENCRYPTED BURST TRANSMISSION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 10px; font-family: monospace; height: 60px; width: 100%; box-sizing: border-box; resize: none;"></textarea>
+            <button onclick="postToVoodoo()" class="button" style="margin: 0; padding: 12px; font-size: 0.9em;">[ BROADCAST TO SECTOR ]</button>
         </div>
     </div>
 
     <script>
-        let currentTitle = "";
+        // Use window explicitly to avoid scope issues in blob/restricted environments
+        window.currentTitle = "";
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7ljyRllZ4a0OYp3B7Nrfw3Bn3QUMsXrUtJ44RlnDUk9fL8I0AyeocNrw1jXLbnDK6wg/exec';
 
         window.onload = function() {
-            loadVoodooMessages();
+            setTimeout(function() {
+                window.loadVoodooMessages();
+            }, 500);
         };
 
-        function generateAchievement() {
+        window.generateAchievement = function() {
             const adjectives = ["Legendary", "Decrepit", "Glistening", "Appalled", "Celestial", "Malfunctioning", "Stinky", "Exasperated", "Unhinged", "Copyright-Infringing", "God-Tier", "Sticky", "Slime-Covered", "Aggressive"];
             const nouns = ["Skybridge", "Tiara", "Oats", "Packet", "Llama", "Cosplayer", "Holocron", "Badge", "Elevator", "Con-Crud", "Foot-Photo", "Vendor-Hall", "Service-Lift"];
             const verbsPast = ["wrangled", "evaded", "glurped", "sued", "screamed at", "infiltrated", "buffered", "ignored", "acquired", "over-clocked", "petted", "dismantled"];
@@ -215,7 +225,7 @@
             const vIng = verbsIng[roll];
 
             const article = /^[aeiou]/i.test(adj) ? "an" : "a";
-            const isPlural = ["Oats", "Foot-Photo", "Badge-Ribbon"].includes(noun);
+            const isPlural = ["Oats"].includes(noun);
             const fullNoun = isPlural ? `${adj} ${noun}` : `${article} ${adj} ${noun}`;
 
             const bodies = [
@@ -240,58 +250,93 @@
             const rarity = pick(["rarity-common", "rarity-legendary", "rarity-celestial"]);
             container.classList.add(rarity);
 
-            currentTitle = `${adj} ${noun}`;
+            window.currentTitle = `${adj} ${noun}`;
             document.getElementById('custom-header').innerText = "NEW ACHIEVEMENT!";
-            document.getElementById('custom-title').innerText = `"${currentTitle}"`;
+            document.getElementById('custom-title').innerText = `"${window.currentTitle}"`;
             document.getElementById('custom-body').innerText = `${pick(bodies)}\n\nREWARD: ${reward}`;
             document.getElementById('share-options').style.display = 'block';
-        }
+        };
 
-        function getShareText() {
-            return `I just earned the "${currentTitle}" achievement at Dragon Con! Don't tell Mordecai: hbar98.github.io #DragonCon #DCC`;
-        }
+        window.getShareText = function() {
+            return `I just earned the "${window.currentTitle}" achievement at Dragon Con! Don't tell Mordecai: hbar98.github.io #DragonCon #DCC`;
+        };
 
-        function shareX() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getShareText())}`, '_blank'); }
-        function shareBlueSky() { window.open(`https://bsky.app/intent/compose?text=${encodeURIComponent(getShareText())}`, '_blank'); }
-        function shareThreads() { window.open(`https://www.threads.net/intent/post?text=${encodeURIComponent(getShareText())}`, '_blank'); }
+        window.shareX = function() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(window.getShareText())}`, '_blank'); };
+        window.shareBlueSky = function() { window.open(`https://bsky.app/intent/compose?text=${encodeURIComponent(window.getShareText())}`, '_blank'); };
+        window.shareThreads = function() { window.open(`https://www.threads.net/intent/post?text=${encodeURIComponent(window.getShareText())}`, '_blank'); };
 
-        function copyToClipboard(e) {
-            navigator.clipboard.writeText(getShareText()).then(() => {
+        window.copyToClipboard = function(e) {
+            if (!navigator.clipboard) {
+                const textArea = document.createElement("textarea");
+                textArea.value = window.getShareText();
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    const btn = e.target;
+                    const originalText = btn.innerText;
+                    btn.innerText = "COPIED!";
+                    setTimeout(() => { btn.innerText = originalText; }, 2000);
+                } catch (err) {}
+                document.body.removeChild(textArea);
+                return;
+            }
+            navigator.clipboard.writeText(window.getShareText()).then(() => {
                 const btn = e.target;
                 const originalText = btn.innerText;
                 btn.innerText = "COPIED!";
                 setTimeout(() => { btn.innerText = originalText; }, 2000);
             });
-        }
+        };
 
-        function loadVoodooMessages() {
-            fetch(SCRIPT_URL, { method: "GET", redirect: "follow" })
-            .then(res => res.json())
-            .then(data => {
-                const feed = document.getElementById('voodoo-feed');
-                feed.innerHTML = '';
-                data.reverse().forEach(row => {
-                    const entry = document.createElement('div');
-                    entry.style.marginBottom = "8px";
-                    entry.innerHTML = `<span style="color: #888;">> ${row[1] || 'Anonymous'}:</span> ${row[2]}`;
-                    feed.appendChild(entry);
-                });
+        window.loadVoodooMessages = function() {
+            const feed = document.getElementById('voodoo-feed');
+            feed.innerHTML = 'SYSTEM: ACCESSING VOODOO STREAM...';
+
+            fetch(SCRIPT_URL, { 
+                method: "GET",
+                mode: "cors",
+                cache: "no-store",
+                credentials: "omit",
+                redirect: "follow"
             })
-            .catch(() => {
-                document.getElementById('voodoo-feed').innerHTML = "SYSTEM ERROR: UNABLE TO RETRIEVE FEED.";
+            .then(res => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            })
+            .then(data => {
+                feed.innerHTML = '';
+                if (data && Array.isArray(data)) {
+                    data.reverse().forEach(row => {
+                        const entry = document.createElement('div');
+                        entry.style.marginBottom = "10px";
+                        entry.style.borderBottom = "1px solid #1a1a1a";
+                        entry.style.paddingBottom = "5px";
+                        entry.innerHTML = `<span style="color: #888; font-size: 0.8em;">[${row[1] || 'Unknown'}]</span><br>${row[2]}`;
+                        feed.appendChild(entry);
+                    });
+                    if (data.length === 0) {
+                        feed.innerHTML = 'SYSTEM: NO TRANSMISSIONS FOUND.';
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("Voodoo Load Error:", err);
+                feed.innerHTML = 'SYSTEM ERROR: CONNECTION INTERRUPTED.<br><br>Ensure the Google Script is deployed for "Anyone" and redirected to follow.';
             });
-        }
+        };
 
-        function postToVoodoo() {
+        window.postToVoodoo = function() {
             const nameField = document.getElementById('voodoo-name');
             const msgField = document.getElementById('voodoo-msg');
-            const name = nameField.value;
-            const message = msgField.value;
+            const name = nameField.value.trim() || 'Anonymous';
+            const message = msgField.value.trim();
 
             if (!message) return;
 
             const btn = document.querySelector('button[onclick="postToVoodoo()"]');
             btn.innerText = "[ TRANSMITTING... ]";
+            btn.disabled = true;
 
             const formData = new URLSearchParams();
             formData.append('name', name);
@@ -306,14 +351,19 @@
             .then(() => {
                 msgField.value = '';
                 btn.innerText = "[ BROADCAST SUCCESS ]";
-                setTimeout(loadVoodooMessages, 1500);
-                setTimeout(() => { btn.innerText = "[ BROADCAST TO SECTOR ]"; }, 3000);
+                setTimeout(window.loadVoodooMessages, 2000);
+                setTimeout(() => { 
+                    btn.innerText = "[ BROADCAST TO SECTOR ]"; 
+                    btn.disabled = false;
+                }, 4000);
             })
-            .catch(() => {
+            .catch(err => {
+                console.error("Voodoo Post Error:", err);
                 btn.innerText = "[ TRANSMISSION FAILED ]";
+                btn.disabled = false;
                 setTimeout(() => { btn.innerText = "[ BROADCAST TO SECTOR ]"; }, 3000);
             });
-        }
+        };
     </script>
 </body>
 </html>
