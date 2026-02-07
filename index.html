@@ -14,16 +14,27 @@
             max-width: 850px;
             margin: auto;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
-        /* Achievement Box - High Energy Theme */
+        /* Achievement Box & Glitch Effect */
         .system-ai {
             background: linear-gradient(180deg, #990000 0%, #300000 100%);
             border: 4px solid #ff4500;
             padding: 20px;
             margin-bottom: 25px;
             box-shadow: 0 0 30px #ff4500;
+            transition: all 0.2s ease;
         }
+
+        .glitch { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
         .header {
             color: #ffcc00;
             font-weight: bold;
@@ -32,6 +43,12 @@
             text-shadow: 2px 2px #000;
             line-height: 1.1;
         }
+
+        /* Rarity Classes */
+        .rarity-common { border-color: #888; box-shadow: 0 0 15px #888; }
+        .rarity-legendary { border-color: #ff8c00; box-shadow: 0 0 25px #ff8c00; }
+        .rarity-celestial { border-color: #00ffff; box-shadow: 0 0 30px #00ffff; }
+
         .achievement {
             color: #fff;
             font-size: 1.3em;
@@ -42,15 +59,9 @@
         }
         .ai-snark { color: #ffa500; font-style: italic; font-weight: bold; font-size: 1em; line-height: 1.4; }
 
-        /* Chat UI - Stacked for Mobile Phones */
+        /* Chat UI */
         .chat-window { border: 2px solid #444; background: rgba(20, 20, 20, 0.95); padding: 12px; }
-        .chat-entry {
-            margin-bottom: 18px;
-            padding: 15px;
-            border-radius: 6px;
-            font-size: 0.95em;
-            line-height: 1.5;
-        }
+        .chat-entry { margin-bottom: 18px; padding: 15px; border-radius: 6px; font-size: 0.95em; line-height: 1.5; }
 
         .donut { border-left: 6px solid #ff69b4; background: #2b121e; }
         .mordecai { border-left: 6px solid #00d4ff; background: #121c2b; }
@@ -59,7 +70,7 @@
         .prepotente { border-left: 6px solid #fdfd96; background: #2b2b12; }
         .katia { border-left: 6px solid #00ffff; background: #122b2b; }
 
-        .username { font-weight: bold; display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; }
+        .username { font-weight: bold; display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.8em; }
         .donut .username { color: #ff69b4; }
         .mordecai .username { color: #00d4ff; }
         .quasar .username { color: #ffcc00; }
@@ -67,72 +78,30 @@
         .prepotente .username { color: #fdfd96; }
         .katia .username { color: #00ffff; }
 
-        /* Floor Status Styles */
-        .floor-status {
-            margin-top: 25px;
-            padding: 15px;
-            border-left: 6px solid #ffcc00;
-            background: #221e00;
-            font-size: 0.85em;
-            line-height: 1.6;
-        }
-        .status-header {
-            color: #ffcc00;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        /* Floor Status */
+        .floor-status { margin-top: 25px; padding: 15px; border-left: 6px solid #ffcc00; background: #221e00; font-size: 0.85em; }
+        .status-header { color: #ffcc00; font-weight: bold; display: block; margin-bottom: 10px; text-transform: uppercase; }
         .status-list { list-style: none; padding: 0; margin: 0; }
         .status-list li { margin-bottom: 5px; }
 
-        /* NFC Blinking Hint */
-        .nfc-hint {
-            margin-top: 20px;
-            padding: 12px;
-            border: 2px solid #ffcc00;
-            background: #221a00;
-            color: #ffcc00;
-            font-weight: bold;
-            text-align: center;
-            font-size: 0.9em;
-            animation: blink 2s infinite;
-        }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-
-        /* Footer & Interactive Elements */
-        .node-footer {
-            margin-top: 25px;
-            border: 2px solid #00ff00;
-            padding: 20px;
-            text-align: center;
-            background: #000;
-        }
+        /* Footer & Buttons */
+        .node-footer { margin-top: 25px; border: 2px solid #00ff00; padding: 20px; text-align: center; background: #000; }
         .button {
-            display: block;
-            width: 100%;
-            box-sizing: border-box;
-            margin-top: 15px;
-            padding: 16px;
-            background-color: #00ff00;
-            color: #000;
-            font-weight: bold;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-size: 1.1em;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
+            display: block; width: 100%; box-sizing: border-box; margin-top: 15px; padding: 16px;
+            background-color: #00ff00; color: #000; font-weight: bold; text-decoration: none;
+            text-transform: uppercase; font-size: 1.1em; border-radius: 4px; border: none; cursor: pointer;
         }
 
-        /* Desktop Adjustments */
+        /* Share Options Styles */
+        #share-options { display: none; margin-top: 15px; }
+        .share-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .share-btn { margin: 0 !important; flex: 1; min-width: 80px; padding: 12px !important; font-size: 0.9em !important; color: white !important; }
+
         @media (min-width: 600px) {
             body { padding: 30px; }
             .header { font-size: 2.2em; }
             .achievement { font-size: 1.6em; }
             .button { width: auto; display: inline-block; padding: 15px 40px; }
-            .chat-entry { font-size: 1em; }
         }
     </style>
 </head>
@@ -142,7 +111,7 @@
         <div class="header">!!! NEW ACHIEVEMENT !!!</div>
         <div class="achievement">"CON-FLOOR SURVIVOR"</div>
         <p>YOU DID IT! You’ve successfully navigated the <strong>ATLANTA SKYBRIDGE GAUNTLET</strong>! You have survived the humidity, the smell of burnt rubber and expensive polyester, and the sheer, unadulterated chaos of sixty-thousand humans trying to occupy the same square inch of hotel carpet! IT IS A MIRACLE YOU HAVEN'T BEEN CRUSHED!</p>
-        <p class="ai-snark">REWARD: You’ve received a [Platinum] Badge Ribbon! It grants you +5 to Crowd Maneuvering and -10 to Personal Space. Also, Carl, look at the feet on these people! There are thousands of them! Thousands of feet in sandals and boots and... oh, look at that one! That’s a good one! WAIT, STOP! I'M SUPPOSED TO BE RUNNING A DUNGEON! GET BACK TO THE MESH!</p>
+        <p class="ai-snark">REWARD: You’ve received a [Platinum] Badge Ribbon! It grants you +5 to Crowd Maneuvering and -10 to Personal Space. Also, Carl, look at the feet on these people! WHY DO YOU DO THIS TO ME?! GET BACK TO THE MESH!</p>
     </div>
 
     <div class="chat-window">
@@ -188,92 +157,178 @@
         </ul>
     </div>
 
-    <div class="nfc-hint">
-        [ SYSTEM WARNING: PROXIMITY SCAN DETECTED. TAP CHIP FOR UNSTABLE DATA UPLOAD ]
-    </div>
-
     <div class="node-footer">
-        <strong style="color: #00ff00; font-size: 1.2em;">[ DRAGON CON MESH ACTIVE ]</strong><br>
+        <strong style="color: #00ff00;">[ DRAGON CON MESH ACTIVE ]</strong><br>
         <span style="color: #888;">NODE ID: !1fcff30a</span><br>
-        <a href="https://meshtastic.org/v/#CIrmv_4BElAKCSExZmNmZjMwYRIPb2JpLXdhbi1rZW1lc2hpGgRmMzBhIgbFMx_P8wooWEIgx5cjLfBcMK-Y-ZG_cuCi_jPojvkJoYq-P1lXSvX0YHxIAA" class="button">
-            JOIN THE MESH
-        </a>
+        <a href="https://meshtastic.org/v/#CIrmv_4BElAKCSExZmNmZjMwYRIPb2JpLXdhbi1rZW1lc2hpGgRmMzBhIgbFMx_P8wooWEIgx5cjLfBcMK-Y-ZG_cuCi_jPojvkJoYq-P1lXSvX0YHxIAA" class="button">JOIN THE MESH</a>
     </div>
 
-    <div id="generator-box" class="system-ai" style="margin-top: 30px; border-style: dashed; background: #220000;">
+    <div id="gen-container" class="system-ai" style="margin-top: 30px; border-style: dashed; background: #220000;">
         <div id="custom-header" class="header" style="font-size: 1.4em;">SYSTEM READY...</div>
         <div id="custom-title" class="achievement">"TAP FOR FATE"</div>
-        <p id="custom-body" style="font-size: 0.9em;">Click below to generate a useless achievement based on your level of survival.</p>
-        <button onclick="generateAchievement()" class="button" style="background-color: #ff4500; color: white;">
-            GENERATE ACHIEVEMENT
-        </button>
+        <p id="custom-body" style="font-size: 0.9em;">Click below to generate a useless achievement.</p>
+
+        <button onclick="generateAchievement()" class="button" style="background-color: #ff4500; color: white;">GENERATE ACHIEVEMENT</button>
+
+        <div id="share-options">
+            <p style="font-size: 0.8em; color: #ffcc00; margin-bottom: 10px;">BRAG TO THE FEED:</p>
+            <div class="share-grid">
+                <button class="button share-btn" onclick="shareX()" style="background: #000;">X</button>
+                <button class="button share-btn" onclick="shareBlueSky()" style="background: #0085ff;">BlueSky</button>
+                <button class="button share-btn" onclick="shareThreads()" style="background: #444;">Threads</button>
+                <button class="button share-btn" onclick="copyToClipboard(event)" style="background: #00ff00; color: #000;">Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-window" style="margin-top: 25px; border-color: #00ff00;">
+        <span class="username" style="color: #00ff00;">[ VOODOO BOARD: SECTOR ATLANTA ]</span>
+
+        <div id="voodoo-feed" style="height: 200px; overflow-y: auto; background: #000; padding: 10px; font-family: monospace; font-size: 0.85em; border: 1px solid #333; margin-bottom: 10px; color: #00ff00;">
+            SYSTEM: INITIALIZING VOODOO FEED...
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <input type="text" id="voodoo-name" placeholder="[ CRAWLER DESIGNATION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 10px; font-family: monospace;">
+            <textarea id="voodoo-msg" placeholder="[ UNENCRYPTED BURST TRANSMISSION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 10px; font-family: monospace; height: 60px;"></textarea>
+            <button onclick="postToVoodoo()" class="button" style="margin: 0; padding: 10px; font-size: 0.9em;">[ BROADCAST TO SECTOR ]</button>
+        </div>
     </div>
 
     <script>
+        let currentTitle = "";
+
         function generateAchievement() {
-    const adjectives = [
-        "Legendary", "Decrepit", "Glistening", "Appalled", "Celestial", "Malfunctioning", "Stinky",
-        "Exasperated", "Damp", "Unhinged", "Slime-Covered", "Deep-Fried", "Aggressive", "Sentient",
-        "Copyright-Infringing", "Sticky", "Over-Hyped", "Subterranean", "God-Tier", "Bourgeois"
-    ];
-    const nouns = [
-        "Skybridge", "Tiara", "Oats", "Packet", "Llama", "Cosplayer", "Holocron", "Badge",
-        "Pizza-Crust", "Elevator", "Con-Crud", "Badge-Ribbon", "Spandex-Onesie", "Service-Lift",
-        "Foot-Photo", "Floor-Boss", "Vendor-Hall", "Swag-Bag", "Safety-Pin", "Energy-Drink"
-    ];
+            const adjectives = ["Legendary", "Decrepit", "Glistening", "Appalled", "Celestial", "Malfunctioning", "Stinky", "Exasperated", "Unhinged", "Copyright-Infringing", "God-Tier", "Sticky", "Slime-Covered", "Aggressive"];
+            const nouns = ["Skybridge", "Tiara", "Oats", "Packet", "Llama", "Cosplayer", "Holocron", "Badge", "Elevator", "Con-Crud", "Foot-Photo", "Vendor-Hall", "Service-Lift"];
+            const verbsPast = ["wrangled", "evaded", "glurped", "sued", "screamed at", "infiltrated", "buffered", "ignored", "acquired", "over-clocked", "petted", "dismantled"];
+            const verbsIng = ["wrangling", "evading", "glurping", "suing", "screaming at", "infiltrating", "buffering", "ignoring", "acquiring", "over-clocking", "petting", "dismantling"];
 
-    // Split verbs into forms to ensure the sentences make grammatical sense
-    const verbsPast = [
-        "wrangled", "evaded", "glurped", "sued", "screamed at", "infiltrated", "buffered",
-        "ignored", "sniffed", "acquired", "dismantled", "out-maneuvered", "accidentally ate",
-        "teleported", "bribed", "disrespected", "over-clocked", "looted", "extorted", "petted"
-    ];
-    const verbsIng = [
-        "wrangling", "evading", "glurping", "suing", "screaming at", "infiltrating", "buffering",
-        "ignoring", "sniffing", "acquiring", "dismantling", "out-maneuvering", "accidentally eating",
-        "teleporting", "bribing", "disrespecting", "over-clocking", "looting", "extorting", "petting"
-    ];
+            const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+            const roll = Math.floor(Math.random() * verbsPast.length);
 
-    const rewards = [
-        "A Common Quality Cotton Sock.",
-        "Priority Elevator Access (Still Broken).",
-        "A Signed Photo of Mongo.",
-        "+5 to Humidity Resistance.",
-        "A Lifetime Supply of Cold Hot Dogs.",
-        "A commemorative pin that says 'I Tried'.",
-        "A Level 1 'Cardboard Cosplay' Kit.",
-        "One (1) singular, luke-warm chicken wing.",
-        "A 5-minute head start before the Security Golems arrive.",
-        "The ability to speak 'Pony' fluently for 10 seconds."
-    ];
+            const adj = pick(adjectives);
+            const noun = pick(nouns);
+            const vPast = verbsPast[roll];
+            const vIng = verbsIng[roll];
 
-    // Helper to pick a random item
-    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-    const roll = Math.floor(Math.random() * verbsPast.length);
+            const article = /^[aeiou]/i.test(adj) ? "an" : "a";
+            const isPlural = ["Oats", "Foot-Photo", "Badge-Ribbon"].includes(noun);
+            const fullNoun = isPlural ? `${adj} ${noun}` : `${article} ${adj} ${noun}`;
 
-    const adj = pick(adjectives);
-    const noun = pick(nouns);
-    const vPast = verbsPast[roll];
-    const vIng = verbsIng[roll];
-    const reward = pick(rewards);
+            const bodies = [
+                `You have ${vPast} ${fullNoun} in a way that makes the AI very uncomfortable.`,
+                `Against all odds, you successfully ${vPast} ${fullNoun} without causing a sector-wide reset.`,
+                `By ${vIng} ${fullNoun}, you have officially peaked. It's all downhill from here.`,
+                `The AI noticed you ${vPast} ${fullNoun}. It's currently writing a creepy poem about it.`,
+                `You just ${vPast} ${fullNoun}. Mordecai is sighing so hard he might pass out.`
+            ];
 
-    // Simple "A vs An" check for the noun
-    const article = /^[aeiou]/i.test(adj) ? "an" : "a";
-    const fullNoun = `${article} ${adj} ${noun}`;
+            let reward = "A Common Quality Cotton Sock.";
+            if (noun === "Tiara") reward = "Princess Donut's grudging respect.";
+            else if (noun === "Oats") reward = "10 seconds of silence from Prepotente.";
+            else if (noun === "Foot-Photo") reward = "A [God-Tier] digital framing kit.";
+            else reward = pick(["Priority Elevator Access (Still Broken).", "A Signed Photo of Mongo.", "+5 to Humidity Resistance.", "A commemorative pin that says 'I Tried'."]);
 
-    const bodies = [
-        `You have ${vPast} ${fullNoun} in a way that makes the AI very uncomfortable.`,
-        `Against all odds, you successfully ${vPast} ${fullNoun} without causing a sector-wide reset.`,
-        `By ${vIng} ${fullNoun}, you have officially peaked. It's all downhill from here, Crawler.`,
-        `The AI noticed you ${vPast} ${fullNoun}. It's currently writing a very creepy poem about it.`,
-        `You just ${vPast} ${fullNoun}. Mordecai is sighing so hard he might actually pass out.`,
-        `Congratulations! You ${vPast} ${fullNoun} and didn't immediately die. That's a first!`
-    ];
+            const container = document.getElementById('gen-container');
+            container.classList.remove('glitch', 'rarity-common', 'rarity-legendary', 'rarity-celestial');
+            void container.offsetWidth;
+            container.classList.add('glitch');
 
-    document.getElementById('custom-header').innerText = "NEW ACHIEVEMENT!";
-    document.getElementById('custom-title').innerText = `"${adj} ${noun}"`;
-    document.getElementById('custom-body').innerText = `${pick(bodies)}\n\nREWARD: ${reward}`;
-}
+            const rarity = pick(["rarity-common", "rarity-legendary", "rarity-celestial"]);
+            container.classList.add(rarity);
+
+            currentTitle = `${adj} ${noun}`;
+            document.getElementById('custom-header').innerText = "NEW ACHIEVEMENT!";
+            document.getElementById('custom-title').innerText = `"${currentTitle}"`;
+            document.getElementById('custom-body').innerText = `${pick(bodies)}\n\nREWARD: ${reward}`;
+
+            document.getElementById('share-options').style.display = 'block';
+        }
+
+        function getShareText() {
+            return `I just earned the "${currentTitle}" achievement at Dragon Con! Don't tell Mordecai: hbar98.github.io #DragonCon #DCC`;
+        }
+
+        function shareX() {
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(getShareText())}`, '_blank');
+        }
+
+        function shareBlueSky() {
+            window.open(`https://bsky.app/intent/compose?text=${encodeURIComponent(getShareText())}`, '_blank');
+        }
+
+        function shareThreads() {
+            window.open(`https://www.threads.net/intent/post?text=${encodeURIComponent(getShareText())}`, '_blank');
+        }
+
+        function copyToClipboard(e) {
+            navigator.clipboard.writeText(getShareText()).then(() => {
+                const btn = e.target;
+                const originalText = btn.innerText;
+                btn.innerText = "COPIED!";
+                setTimeout(() => { btn.innerText = originalText; }, 2000);
+            });
+        }
+
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7ljyRllZ4a0OYp3B7Nrfw3Bn3QUMsXrUtJ44RlnDUk9fL8I0AyeocNrw1jXLbnDK6wg/exec';
+
+        window.onload = function() {
+            loadVoodooMessages();
+        };
+
+        function loadVoodooMessages() {
+            fetch(SCRIPT_URL)
+            .then(res => res.json())
+            .then(data => {
+                const feed = document.getElementById('voodoo-feed');
+                feed.innerHTML = '';
+                data.reverse().forEach(row => {
+                    const entry = document.createElement('div');
+                    entry.style.marginBottom = "8px";
+                    entry.innerHTML = `<span style="color: #888;">> ${row[1] || 'Anonymous'}:</span> ${row[2]}`;
+                    feed.appendChild(entry);
+                });
+            })
+            .catch(err => {
+                document.getElementById('voodoo-feed').innerHTML = "SYSTEM ERROR: UNABLE TO RETRIEVE FEED.";
+            });
+        }
+
+        function postToVoodoo() {
+            const nameField = document.getElementById('voodoo-name');
+            const msgField = document.getElementById('voodoo-msg');
+            const name = nameField.value;
+            const message = msgField.value;
+
+            if (!message) return;
+
+            const btn = document.querySelector('button[onclick="postToVoodoo()"]');
+            btn.innerText = "[ TRANSMITTING... ]";
+
+            const formData = new URLSearchParams();
+            formData.append('name', name);
+            formData.append('message', message);
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData.toString()
+            })
+            .then(() => {
+                msgField.value = '';
+                btn.innerText = "[ BROADCAST SUCCESS ]";
+                setTimeout(loadVoodooMessages, 1500);
+                setTimeout(() => { btn.innerText = "[ BROADCAST TO SECTOR ]"; }, 3000);
+            })
+            .catch(err => {
+                btn.innerText = "[ TRANSMISSION FAILED ]";
+                setTimeout(() => { btn.innerText = "[ BROADCAST TO SECTOR ]"; }, 3000);
+            });
+        }
     </script>
 </body>
 </html>
