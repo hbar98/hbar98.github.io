@@ -133,6 +133,21 @@
         }
         @keyframes blink { 50% { opacity: 0; } }
 
+        /* NFC Hint Style */
+        .nfc-hint {
+            margin-top: 20px;
+            padding: 12px;
+            border: 2px solid #ffcc00;
+            background: #221a00;
+            color: #ffcc00;
+            font-weight: bold;
+            text-align: center;
+            font-size: 0.9em;
+            animation: pulse-warning 2s infinite;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        @keyframes pulse-warning { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
         /* Easter Egg Overlay */
         #easter-egg-overlay {
             display: none;
@@ -178,7 +193,7 @@
     <!-- FULL CHARACTER CHAT (Dynamic) -->
     <div class="chat-window">
         <span class="username" style="color: #00ff00; display: block; margin-bottom: 10px; font-size: 1.2em;">[ LIVE SYSTEM CHAT ]</span>
-        <div id="character-feed" aria-live="polite">
+        <div id="character-feed">
             <!-- JS will populate this -->
         </div>
     </div>
@@ -186,7 +201,7 @@
     <!-- LIVE STATUS BLOCK -->
     <div class="floor-status">
         <span class="status-header">[ LIVE FLOOR STATUS: SECTOR ATLANTA ]</span>
-        <ul class="status-list" aria-live="polite">
+        <ul class="status-list">
             <li>⏳ LEVEL COLLAPSE IN: <span id="level-timer" style="color: #ff0000; font-weight: bold; font-family: 'Share Tech Mono', monospace;">CALCULATING...</span></li>
             <li id="status-row-1">🔸 SCANNING SECTOR...</li>
             <li id="status-row-2">🔸 SCANNING SECTOR...</li>
@@ -201,6 +216,11 @@
             <div id="panic-fill" style="height: 100%; background: linear-gradient(90deg, #fdfd96, #ff0000); width: 85%; transition: width 1s;"></div>
         </div>
         <p id="panic-text" style="font-size: 0.9em; margin-top: 8px; color: #fdfd96; font-weight: bold; text-transform: uppercase; font-family: 'Share Tech Mono', monospace;">⚠️ CURRENT STATUS: AAAAAAHHHHH!</p>
+    </div>
+
+    <!-- NFC HINT -->
+    <div class="nfc-hint">
+        [ SYSTEM WARNING: PROXIMITY SCAN DETECTED. TAP CHIP FOR UNSTABLE DATA UPLOAD ]
     </div>
 
     <div id="gen-container" class="system-ai" style="margin-top: 30px; border-style: dashed; background: #220000;">
@@ -335,7 +355,7 @@
                 id: 'quasar',
                 name: 'Quasar (Legal Counsel/Certified Genius)',
                 lines: [
-                    "CHOKEPOINT? I’ll sue the very concept of occupancy! I’ll sue the bricks! CRAWLER, YOUR RIGHT TO STAND IN THIS CROWDED HALLWAY IS CONSTITUTIONALLY PROTECTED BY ME!",
+                    "CHOKEPOINT? I’ll sue the very concept of occupancy! I’ll sue the bricks! CRAWLER, YOUR RIGHT TO STAND HERE IS PROTECTED!",
                     "Overpriced water? That's extortion! I'll file a class-action lawsuit against hydration itself! I'll sue the molecule!",
                     "They wouldn't let me into the VIP lounge? I'll buy the lounge! Then I'll sue the bouncer for emotional distress!",
                     "This badge requires a waiver? I don't sign waivers, I rewrite them! I OWN THE FINE PRINT!",
@@ -350,7 +370,7 @@
                 id: 'casandra',
                 name: 'Casandra (Exasperated Operations)',
                 lines: [
-                    "EVERYONE SHUT UP! Crawler, keep the mesh open. If I lose my tactical overview because you were too busy looking at cosplayers, I will personally rewrite your respawn protocol!",
+                    "EVERYONE SHUT UP! Crawler, keep the mesh open. If I lose my tactical overview, I will personally rewrite your respawn protocol!",
                     "I am tracking 50,000 entities in this sector and they are all moving randomly. It's tactical suicide. Maintain formation!",
                     "Who unauthorized this broadcast? Actually, never mind. Just keep the signal up. I need to monitor the buffet line.",
                     "If one more person asks me where the bathroom is, I'm going to start venting atmosphere.",
@@ -385,7 +405,9 @@
                     "My feet hurt, but this outfit is worth the pain. Stop staring... actually, don't stop.",
                     "Anyone want to help me find some trouble? The fun kind, obviously.",
                     "Yo, barkeep at the con bar! Whose ass do I gotta freeze to get a shot? This humidity's meltin' my icicles—gimme somethin' strong!",
+                    "Saw a hunk in armor by the elevators—hey, tall and sweaty, wanna share a potion? My feet are killin' me, but the view's worth it.",
                     "You mess with Carl's crew, I'll shatter your badge like glass! Come at us, and your blood turns to slush—now who's buyin' the next round?",
+                    "This outfit's hot as hell, but damn if it don't turn heads. Stop starin'... or don't, I could use the ego boost after that line wait.",
                     "Accidentally iced a pushy vendor—oops, no remorse! Barry'd laugh; now, anyone up for trouble? The drunk kind, obviously."
                 ]
             },
@@ -397,7 +419,9 @@
                     "Reckon we bypass the shuttle line. It's chock-a-block. We walk.",
                     "Don't be a drongo. That 'free' sample is definitely trapped.",
                     "Fair dinkum, the prices at the food court are daylight robbery. Who's got rations?",
+                    "Oi, mates, that shuttle queue's a bloody ambush—chockers with traps. Let's leg it; no drongo waits for that nonsense.",
                     "Watch yer six in the panel room; smells like a setup. If ya need backup, I'm in—debts paid with bullets, yeah?",
+                    "Fair dinkum, this con's prices are robbery. Who's packin' rations? Can't fight on empty, especially after losin' my ray of light.",
                     "That cosplay mob's dodgy—wrapped 'round the buildin'. Bypass it, or we'll wither like I almost did. For Ife, we push on.",
                     "Broodin' over the skybridge chaos—reminds me of lost mates. But Carl, ya pulled me back; need a gun? I'm yers."
                 ]
@@ -410,6 +434,8 @@
                     "The sponsors love the spandex look! Can you strike a pose near the trash can? It's 'gritty'.",
                     "Can we get a close up on that badge? It's shiny! Shiny things poll well with the kuo-toa!",
                     "Donut! The camera loves you! Ignore the goblin, look at the lens!",
+                    "Live in 5, crawlers! Strike a pose by that booth—the sponsors adore the chaos aesthetic. Flex for the outer systems!",
+                    "Donut, the camera's obsessed with you! Ignore the line wait; look fierce—shiny badges poll huge with the kuo-toa viewers!",
                     "Ratings spiking on the elevator fail! Can we get a gritty shot near the trash? It's trending—keep surviving for that mutual win!",
                     "We're golden on engagement—the 'Con-Crud Arc' is hot. Listen up: follow my lead, or the AI notices. Gossip Girl collab post-crawl?",
                     "Focus group loves the humidity drama! Pose heroic, ignore the goblin cosplay—viewers eat it up. You're stars; don't die on me!"
@@ -455,17 +481,8 @@
                 window.addChatMessage();
             }
 
-            if (window.chatInterval) clearTimeout(window.chatInterval);
-            window.scheduleNextMessage();
-        };
-
-        // Organic Chat Timing (Random 7-12s)
-        window.scheduleNextMessage = function() {
-            const delay = Math.floor(Math.random() * (12000 - 7000 + 1)) + 7000;
-            window.chatInterval = setTimeout(() => {
-                window.addChatMessage();
-                window.scheduleNextMessage();
-            }, delay);
+            if (window.chatInterval) clearInterval(window.chatInterval);
+            window.chatInterval = setInterval(window.addChatMessage, 9000);
         };
 
         window.addChatMessage = function() {
