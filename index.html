@@ -86,12 +86,10 @@
         .casandra { border-left: 6px solid #00ff00; background: #122b1a; }
         .prepotente { border-left: 6px solid #fdfd96; background: #2b2b12; }
         .katia { border-left: 6px solid #00ffff; background: #122b2b; }
-        
-        /* New Characters */
-        .odette { border-left: 6px solid #9932cc; background: #2b122b; } /* Dark Orchid */
-        .elle { border-left: 6px solid #98fb98; background: #122b1b; } /* Pale Green */
-        .florin { border-left: 6px solid #daa520; background: #2b2212; } /* Goldenrod */
-        .zev { border-left: 6px solid #ff1493; background: #2b121c; } /* Deep Pink */
+        .odette { border-left: 6px solid #9932cc; background: #2b122b; } 
+        .elle { border-left: 6px solid #98fb98; background: #122b1b; } 
+        .florin { border-left: 6px solid #daa520; background: #2b2212; } 
+        .zev { border-left: 6px solid #ff1493; background: #2b121c; }
 
         .username { font-weight: bold; display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.9em; font-family: 'Share Tech Mono', monospace; letter-spacing: 0.5px; }
         .donut .username { color: #ff69b4; }
@@ -180,7 +178,7 @@
     <!-- FULL CHARACTER CHAT (Dynamic) -->
     <div class="chat-window">
         <span class="username" style="color: #00ff00; display: block; margin-bottom: 10px; font-size: 1.2em;">[ LIVE SYSTEM CHAT ]</span>
-        <div id="character-feed">
+        <div id="character-feed" aria-live="polite">
             <!-- JS will populate this -->
         </div>
     </div>
@@ -188,7 +186,7 @@
     <!-- LIVE STATUS BLOCK -->
     <div class="floor-status">
         <span class="status-header">[ LIVE FLOOR STATUS: SECTOR ATLANTA ]</span>
-        <ul class="status-list">
+        <ul class="status-list" aria-live="polite">
             <li>⏳ LEVEL COLLAPSE IN: <span id="level-timer" style="color: #ff0000; font-weight: bold; font-family: 'Share Tech Mono', monospace;">CALCULATING...</span></li>
             <li id="status-row-1">🔸 SCANNING SECTOR...</li>
             <li id="status-row-2">🔸 SCANNING SECTOR...</li>
@@ -199,7 +197,7 @@
     <!-- Prepotente Panic Meter -->
     <div class="floor-status" style="border-left-color: #fdfd96; margin-top: 15px;">
         <span class="status-header">[ PREPOTENTE PANIC METER ]</span>
-        <div id="panic-bar" style="height: 20px; background: #111; border: 2px solid #fdfd96; position: relative; overflow: hidden; margin-top: 10px;">
+        <div id="panic-bar" style="height: 30px; background: #111; border: 2px solid #fdfd96; position: relative; overflow: hidden; margin-top: 10px;">
             <div id="panic-fill" style="height: 100%; background: linear-gradient(90deg, #fdfd96, #ff0000); width: 85%; transition: width 1s;"></div>
         </div>
         <p id="panic-text" style="font-size: 0.9em; margin-top: 8px; color: #fdfd96; font-weight: bold; text-transform: uppercase; font-family: 'Share Tech Mono', monospace;">⚠️ CURRENT STATUS: AAAAAAHHHHH!</p>
@@ -230,13 +228,18 @@
             <button onclick="window.loadVoodooMessages()" style="background: none; border: 1px solid #00ff00; color: #00ff00; font-size: 0.8em; padding: 4px 10px; cursor: pointer; font-family: 'Share Tech Mono', monospace;">REFRESH</button>
         </div>
         
-        <div id="voodoo-feed" style="height: 300px; overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; background: #000; padding: 10px; font-family: 'Share Tech Mono', monospace; font-size: 1.1em; border: 1px solid #333; margin-bottom: 15px; color: #00ff00; line-height: 1.5;">
+        <div id="voodoo-feed" style="height: 300px; overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; background: #000; padding: 10px; font-family: 'Share Tech Mono', monospace; font-size: 1.1em; border: 1px solid #333; margin-bottom: 15px; color: #00ff00; line-height: 1.5;" aria-live="polite">
             SYSTEM: INITIALIZING VOODOO FEED...
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 8px;">
             <input type="text" id="voodoo-name" maxlength="25" placeholder="[ CRAWLER DESIGNATION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 14px; font-family: 'Share Tech Mono', monospace; width: 100%; box-sizing: border-box; font-size: 1.1em;">
-            <textarea id="voodoo-msg" maxlength="150" placeholder="[ UNENCRYPTED BURST TRANSMISSION ]&#10;[ MAX 150 CHARS - KEEP IT PG-13 OR GET ACCELERATED ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 14px; font-family: 'Share Tech Mono', monospace; height: 100px; width: 100%; box-sizing: border-box; resize: none; font-size: 1.1em;"></textarea>
+            
+            <div style="position: relative;">
+                <textarea id="voodoo-msg" maxlength="150" oninput="window.updateCharCount(this)" placeholder="[ UNENCRYPTED BURST TRANSMISSION ]&#10;[ MAX 150 CHARS - KEEP IT PG OR GET ACCELERATED ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 14px; padding-bottom: 25px; font-family: 'Share Tech Mono', monospace; height: 100px; width: 100%; box-sizing: border-box; resize: none; font-size: 1.1em;"></textarea>
+                <span id="char-count" style="position: absolute; bottom: 8px; right: 10px; font-size: 0.8em; color: #00ff00; font-family: 'Share Tech Mono', monospace;">150</span>
+            </div>
+
             <button onclick="window.postToVoodoo()" class="button" style="margin: 0; padding: 16px; font-size: 1.1em;">[ BROADCAST TO SECTOR ]</button>
         </div>
     </div>
@@ -276,17 +279,26 @@
                     "WHY IS EVERYONE SWEATING? IT IS DISGUSTING. MORDECAI, MAKE THE AIR CONDITIONING COLDER! USE YOUR MANAGER POWERS!",
                     "CARL! THAT ROBOT JUST BEEPED AT ME! IS IT A BOMB? IT'S PROBABLY A BOMB. MONGO, DESTROY IT!",
                     "I AM THE QUEEN OF THIS CONVENTION! WHY IS THERE NO RED CARPET IN THE LOBBY? UNACCEPTABLE!",
-                    "CARL! SIGNET SAYS SHE FOUND A BOOTH WITH CATNIP. WE ARE GOING THERE. NOW!"
+                    "CARL! SIGNET SAYS SHE FOUND A BOOTH WITH CATNIP. WE ARE GOING THERE. NOW!",
+                    "CARL! THIS PANEL ROOM IS UNFIT FOR ROYALTY! THE CHAIRS ARE PLASTIC! MORDECAI, DEMAND THEY BRING IN A THRONE IMMEDIATELY OR MONGO WILL EAT THE PROJECTOR!",
+                    "OH, LOOK AT THAT PITIFUL COSPLAY OF A PRINCESS! IT'S AN INSULT TO TRUE QUEENS LIKE ME. CARL, TAKE A PHOTO SO I CAN SHOW THE VIEWERS HOW TO DO IT PROPERLY!",
+                    "WHY ARE THESE HUMANS NOT BOWING? I AM PRINCESS DONUT! MONGO, DEMONSTRATE YOUR MAJESTY—BUT DON'T STEP ON THE MERCH, IT MIGHT BE EDIBLE.",
+                    "CARL! THAT BOOTH HAS SPARKLY ACCESSORIES, BUT THEY'RE FAKE GEMS! WE MUST ACQUIRE THEM ANYWAY. MORDECAI, USE YOUR MAGIC TO UPGRADE THEM TO CELESTIAL QUALITY!",
+                    "THIS HUMIDITY IS RUINING MY FUR! CARL, FIND ME A FAN CLUB TO WORSHIP ME WHILE I POSE. MONGO APPROVES—HE'S ALREADY CHEWING ON A BADGE LANYARD!"
                 ]
             },
             {
                 id: 'prepotente',
                 name: 'Prepotente (Pony Extraordinaire)',
                 lines: [
-                    "AAAAAAAAAAHHHHHH! MOTHER! THE ELEVATORS ARE A BORANT CONSPIRACY! THEY WANT US TO STARVE ON THE SKYBRIDGE!",
-                    "AAAAAAAAAAHHHHHH! THE LINE FOR BADGES IS ETERNAL! I WILL WITHER AND PERISH BEFORE I GET MY LANYARD!",
+                    "AAAAAAAAAAHHHHHH! MOTHER! THE ELEVATORS ARE A BORANT CONSPIRACY! THEY WANT US TO STARVE ON THE SKYBRIDGE! AAAAAAAAAAHHHHHHH!",
+                    "AAAAAAAAAAHHHHHH! THE LINE FOR BADGES IS ETERNAL! I WILL WITHER AND PERISH BEFORE I GET MY LANYARD! AAAAAAAAAAHHHHHHH!",
                     "AAAAAAAAAAHHHHHH! THAT MAN IS DRESSED AS A WOLF! HE IS A FRAUD! AAAAAAAAAAHHHHHHH!",
-                    "AAAAAAAAAAHHHHHH! I HAVE EATEN A STICKER! IT TASTES OF ADHESIVE AND REGRET!"
+                    "AAAAAAAAAAHHHHHH! I HAVE EATEN A STICKER! IT TASTES OF ADHESIVE AND REGRET!",
+                    "AAAAAAAAAAHHHHHH! MOTHER! THIS DEALER'S HALL IS A LABYRINTH OF DOOM! I DEMAND PREMIUM OATS AT EVERY BOOTH OR I'LL STAMPEDE THE LINE!",
+                    "AAAAAAAAAAHHHHHH! THAT COSPLAYER JUST STEPPED ON MY HOOF! IT'S ASSAULT! CARL, YOU COLOSSAL DOLT, WHY DIDN'T YOU WARN ME ABOUT THESE FERAL HUMANS?",
+                    "AAAAAAAAAAHHHHHH! THE WIFI IS DOWN! HOW WILL I BROADCAST MY PANIC TO THE VIEWERS? MOTHER, SAVE ME FROM THIS DIGITAL ABYSS!",
+                    "AAAAAAAAAAHHHHHH! THAT PANEL ON PONIES IS FULL OF FRAUDS! MOTHER, THEY DON'T UNDERSTAND TRUE EQUINE EXCELLENCE LIKE ME!"
                 ]
             },
             {
@@ -296,37 +308,57 @@
                     "Carl, I’ve found a path through the food court, but it’s guarded by a Level 60 'Line for Pizza.' We need to use this mesh node to coordinate the bypass!",
                     "I just saw a crawler dual-wielding light sabers. I don't think that's in the rulebook, Carl. Should we be worried?",
                     "My map says the panel is in this room, but it's just a closet full of chairs. Is this a trap?",
-                    "I think I just accidentally joined a cult in the gaming hall. They gave me a ribbon."
+                    "I think I just accidentally joined a cult in the gaming hall. They gave me a ribbon.",
+                    "Carl, the skybridge is a chokepoint—Level 50 'Crowd Surge' ahead. We could flank via the stairs, but watch for that rogue escalator trap.",
+                    "I spotted a group stuck in the badge pickup line; it's like a bubble quest. Should we coordinate a rescue with the mesh? I don't want to leave them behind.",
+                    "My badge says the art alley is clear, but it's probably a mimic booth. Carl, let's test it with a probe—maybe throw a free sticker?",
+                    "Accidentally joined a LARP group in the lobby; they thought my tank build was cosplay. Now I'm committed—anyone got tips for improvising a shield from a program booklet?",
+                    "This humidity debuff is stacking; we need a hydration station bypass. Carl, your explosive feet might clear a path, but let's not blow up the con-crud vendors."
                 ]
             },
             {
                 id: 'mordecai',
                 name: 'Mordecai (Manager)',
                 lines: [
-                    "Stop screaming! Prepotente, the elevators have been broken since the tenth floor. Crawler, keep that signal steady!",
+                    "Stop screaming! Prepotente, the elevators have been broken since the tenth floor. Crawler, keep that signal steady! We need a clear link before the Skybridge becomes a total chokepoint.",
                     "Donut, for the last time, you cannot join the parade. You are a cat. Carl, focus on the objective. We need to find the charging station.",
                     "If I see one more person doing the Macarena, I'm going to have an aneurysm. Keep moving, Crawlers.",
-                    "Drink water. I don't want to have to explain to the showrunners why my crawlers passed out in a fur suit."
+                    "Drink water. I don't want to have to explain to the showrunners why my crawlers passed out in a fur suit.",
+                    "Donut, no, you can't demand a parade float—that's a ratings trap. Focus on the objective: find the saferoom booth before the fire marshal shuts it down.",
+                    "If I have to explain one more time why overpriced con snacks aren't potions... Drink your water, crawlers, or I'll brew something that'll make you regret it.",
+                    "Prepotente, calm your panic—the elevators are a known hazard since floor one. Stick to the plan, or you'll end up like my brother: lost in the chaos.",
+                    "You can't save every lost cosplayer, Carl. But... fine, let's reroute. Just don't tell Odette; she'd turn it into a drama episode.",
+                    "This mesh network is unstable—reminds me of that cursed guild on floor five. Keep signals low, or we'll attract the wrong kind of attention."
                 ]
             },
             {
                 id: 'quasar',
                 name: 'Quasar (Legal Counsel/Certified Genius)',
                 lines: [
-                    "CHOKEPOINT? I’ll sue the very concept of occupancy! I’ll sue the bricks! CRAWLER, YOUR RIGHT TO STAND HERE IS PROTECTED!",
+                    "CHOKEPOINT? I’ll sue the very concept of occupancy! I’ll sue the bricks! CRAWLER, YOUR RIGHT TO STAND IN THIS CROWDED HALLWAY IS CONSTITUTIONALLY PROTECTED BY ME!",
                     "Overpriced water? That's extortion! I'll file a class-action lawsuit against hydration itself! I'll sue the molecule!",
                     "They wouldn't let me into the VIP lounge? I'll buy the lounge! Then I'll sue the bouncer for emotional distress!",
-                    "This badge requires a waiver? I don't sign waivers, I rewrite them! I OWN THE FINE PRINT!"
+                    "This badge requires a waiver? I don't sign waivers, I rewrite them! I OWN THE FINE PRINT!",
+                    "BADGE LINE TOO LONG? THAT'S A VIOLATION OF CRAWLER RIGHTS! I'LL SUE THE CONVENTION CENTER, THE VOLUNTEERS, AND TIME ITSELF!",
+                    "This overpriced swag? Extortion! I'll file against the vendors, the economy, and the concept of capitalism—your loot is protected, crawler!",
+                    "They banned my briefcase in the panel room? I'll acquire the whole hotel! Then sue the security for infringing on my genius!",
+                    "Humidity clause in the terms? I didn't sign that! I'll rewrite the weather contract and sue the clouds for emotional damages!",
+                    "No VIP access? Unacceptable! I'll litigate the hierarchy, buy the elite lounge, and countersue gravity for holding us down!"
                 ]
             },
             {
                 id: 'casandra',
                 name: 'Casandra (Exasperated Operations)',
                 lines: [
-                    "EVERYONE SHUT UP! Crawler, keep the mesh open. If I lose my tactical overview, I will personally rewrite your respawn protocol!",
+                    "EVERYONE SHUT UP! Crawler, keep the mesh open. If I lose my tactical overview because you were too busy looking at cosplayers, I will personally rewrite your respawn protocol!",
                     "I am tracking 50,000 entities in this sector and they are all moving randomly. It's tactical suicide. Maintain formation!",
                     "Who unauthorized this broadcast? Actually, never mind. Just keep the signal up. I need to monitor the buffet line.",
-                    "If one more person asks me where the bathroom is, I'm going to start venting atmosphere."
+                    "If one more person asks me where the bathroom is, I'm going to start venting atmosphere.",
+                    "QUIET, ALL OF YOU! Crawler, maintain the perimeter—I've got 60,000 entities on radar, and they're all converging on the autograph line. Formation now!",
+                    "Who greenlit this parade route? It's a tactical nightmare! Signal the bypass, or I'll vent the entire skybridge myself.",
+                    "Another elevator outage? Unauthorized! Keep the mesh stable—I need eyes on the food court before it turns into a battlefield.",
+                    "If one more crawler asks for directions to the bathroom, I'll rewrite the floor map! Focus on survival, not side quests!",
+                    "Tracking cosplay mobs—random movement patterns. Hold position, or this sector becomes a respawn zone. Shut up and listen!"
                 ]
             },
             {
@@ -336,7 +368,12 @@
                     "Ratings are down in the Vendor Hall. Spice it up! Maybe start a small fire? Just a little one.",
                     "Who authorized that cosplay? It infringes on Borant copyright. I want names!",
                     "I need more drama in the food court! Someone flip a table! The viewers are bored!",
-                    "Look at those engagement numbers! The 'Elevator Failure' arc is testing really well with the Valtay."
+                    "Look at those engagement numbers! The 'Elevator Failure' arc is testing really well with the Valtay.",
+                    "Viewer numbers dipping in the gaming hall? Let's amp it—start a flash mob or a fake feud. The Valtay eat up that chaos!",
+                    "That elevator jam is gold for the 'Survival Arc'! Keep it rolling—who authorized the fix? I need more suffering for the highlights!",
+                    "Cosplay infringement? Perfect scandal! Get names, flip a table if needed—the engagement from outrage is chef's kiss.",
+                    "Bored in the vendor hall? Ignite a small bidding war—just enough fire for ratings. Remember, the longer the drama, the bigger my payout!",
+                    "Look at those skybridge stats! The 'Humidity Hell' episode is trending. Push the crawlers harder—viewers love a breakdown!"
                 ]
             },
             {
@@ -346,7 +383,10 @@
                     "Well hello there, tall, dark, and armored. Care to share a potion?",
                     "I saw a barbarian in the lobby who could definitely crush a melon. I'm intrigued.",
                     "My feet hurt, but this outfit is worth the pain. Stop staring... actually, don't stop.",
-                    "Anyone want to help me find some trouble? The fun kind, obviously."
+                    "Anyone want to help me find some trouble? The fun kind, obviously.",
+                    "Yo, barkeep at the con bar! Whose ass do I gotta freeze to get a shot? This humidity's meltin' my icicles—gimme somethin' strong!",
+                    "You mess with Carl's crew, I'll shatter your badge like glass! Come at us, and your blood turns to slush—now who's buyin' the next round?",
+                    "Accidentally iced a pushy vendor—oops, no remorse! Barry'd laugh; now, anyone up for trouble? The drunk kind, obviously."
                 ]
             },
             {
@@ -356,7 +396,10 @@
                     "Oi! Watch your back in the dealer's room, mates. It's a bloody shark tank in there.",
                     "Reckon we bypass the shuttle line. It's chock-a-block. We walk.",
                     "Don't be a drongo. That 'free' sample is definitely trapped.",
-                    "Fair dinkum, the prices at the food court are daylight robbery. Who's got rations?"
+                    "Fair dinkum, the prices at the food court are daylight robbery. Who's got rations?",
+                    "Watch yer six in the panel room; smells like a setup. If ya need backup, I'm in—debts paid with bullets, yeah?",
+                    "That cosplay mob's dodgy—wrapped 'round the buildin'. Bypass it, or we'll wither like I almost did. For Ife, we push on.",
+                    "Broodin' over the skybridge chaos—reminds me of lost mates. But Carl, ya pulled me back; need a gun? I'm yers."
                 ]
             },
             {
@@ -366,7 +409,10 @@
                     "We're live in 5! Look heroic! Flex something! The outer systems are watching!",
                     "The sponsors love the spandex look! Can you strike a pose near the trash can? It's 'gritty'.",
                     "Can we get a close up on that badge? It's shiny! Shiny things poll well with the kuo-toa!",
-                    "Donut! The camera loves you! Ignore the goblin, look at the lens!"
+                    "Donut! The camera loves you! Ignore the goblin, look at the lens!",
+                    "Ratings spiking on the elevator fail! Can we get a gritty shot near the trash? It's trending—keep surviving for that mutual win!",
+                    "We're golden on engagement—the 'Con-Crud Arc' is hot. Listen up: follow my lead, or the AI notices. Gossip Girl collab post-crawl?",
+                    "Focus group loves the humidity drama! Pose heroic, ignore the goblin cosplay—viewers eat it up. You're stars; don't die on me!"
                 ]
             }
         ];
@@ -409,8 +455,17 @@
                 window.addChatMessage();
             }
 
-            if (window.chatInterval) clearInterval(window.chatInterval);
-            window.chatInterval = setInterval(window.addChatMessage, 9000);
+            if (window.chatInterval) clearTimeout(window.chatInterval);
+            window.scheduleNextMessage();
+        };
+
+        // Organic Chat Timing (Random 7-12s)
+        window.scheduleNextMessage = function() {
+            const delay = Math.floor(Math.random() * (12000 - 7000 + 1)) + 7000;
+            window.chatInterval = setTimeout(() => {
+                window.addChatMessage();
+                window.scheduleNextMessage();
+            }, delay);
         };
 
         window.addChatMessage = function() {
@@ -436,12 +491,15 @@
             const randomSnark = AI_SNARKS[Math.floor(Math.random() * AI_SNARKS.length)];
             document.getElementById('main-ai-snark').innerText = `REWARD: ${randomSnark}`;
 
-            // Init Chat Cycle
+            // Generate Dynamic Chat
             window.initChatCycle();
 
             // Init Dynamic Statuses
             setTimeout(function() {
                 window.loadVoodooMessages();
+                // Refresh Voodoo every 30 seconds
+                setInterval(window.loadVoodooMessages, 30000);
+                
                 window.initPanicMeter();
                 window.initLiveStats();
             }, 500);
@@ -453,23 +511,42 @@
             if (window.panicInterval) clearInterval(window.panicInterval);
             const fill = document.getElementById('panic-fill');
             const text = document.getElementById('panic-text');
-            const screams = [
-                "⚠️ CURRENT STATUS: AAAAAAHHHHH!",
-                "⚠️ CURRENT STATUS: ELEVATOR SABOTAGE!",
-                "⚠️ CURRENT STATUS: OATS DEPLETION!",
-                "⚠️ CURRENT STATUS: MOTHERRR!",
-                "⚠️ CURRENT STATUS: UNACCEPTABLE!"
+            
+            // Expanded pool of panic statuses
+            const statuses = [
+                "AAAAAAHHHHH!",
+                "ELEVATOR SABOTAGE!",
+                "OATS DEPLETION!",
+                "MOTHERRR!",
+                "UNACCEPTABLE!",
+                "CONTROLLED SOBBING",
+                "THE SKYBRIDGE IS A TRAP!",
+                "WHERE IS MY LANYARD?!",
+                "TOO MANY PEOPLE!",
+                "I REQUIRE PREMIUM OATS!",
+                "THE CARPET IS MOVING!",
+                "DIGNITY CRITICAL!"
             ];
 
             window.panicInterval = setInterval(() => {
-                const newWidth = Math.floor(Math.random() * (98 - 75 + 1)) + 75;
+                // Range 60% to 100% for visible movement
+                const newWidth = Math.floor(Math.random() * (100 - 60 + 1)) + 60;
                 fill.style.width = newWidth + '%';
-                if (newWidth > 94) {
-                    text.innerText = screams[Math.floor(Math.random() * screams.length)];
-                } else if (newWidth < 78) {
-                    text.innerText = "⚠️ CURRENT STATUS: CONTROLLED SOBBING";
+                
+                // Pick a random status every time
+                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                text.innerText = `⚠️ CURRENT STATUS: ${randomStatus}`;
+
+                // Color logic based on width
+                if (newWidth > 90) {
+                    text.style.color = "#ff0000"; // Red
+                    fill.style.background = "linear-gradient(90deg, #ff4500, #ff0000)";
+                } else if (newWidth < 75) {
+                    text.style.color = "#fdfd96"; // Yellow
+                    fill.style.background = "linear-gradient(90deg, #fdfd96, #ffcc00)";
                 } else {
-                    text.innerText = "⚠️ CURRENT STATUS: AAAAAAHHHHH!";
+                    text.style.color = "#ff8c00"; // Orange
+                    fill.style.background = "linear-gradient(90deg, #ffcc00, #ff4500)";
                 }
             }, 3000);
         };
@@ -667,9 +744,21 @@
             return clean.trim().substring(0, 150);
         };
 
+        window.updateCharCount = function(textarea) {
+            const remaining = 150 - textarea.value.length;
+            const counter = document.getElementById('char-count');
+            counter.innerText = remaining;
+            counter.style.color = remaining < 20 ? '#ff0000' : '#00ff00';
+        };
+
         window.loadVoodooMessages = function() {
             const feed = document.getElementById('voodoo-feed');
-            feed.innerHTML = 'SYSTEM: ACCESSING VOODOO STREAM...';
+            
+            // Don't wipe the feed if it already has content, to prevent flickering
+            if(feed.children.length === 0 || feed.innerText.includes('SYSTEM:')) {
+                 feed.innerHTML = 'SYSTEM: ACCESSING VOODOO STREAM...';
+            }
+
             const cacheBuster = SCRIPT_URL + (SCRIPT_URL.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
             fetch(cacheBuster, { method: "GET", redirect: "follow" })
             .then(res => {
@@ -677,6 +766,7 @@
                 return res.json();
             })
             .then(data => {
+                // Clear and rebuild
                 feed.innerHTML = '';
                 if (data && Array.isArray(data)) {
                     data.reverse().forEach(row => {
@@ -694,7 +784,10 @@
             })
             .catch(err => {
                 console.error("Voodoo Load Error:", err);
-                feed.innerHTML = 'SYSTEM ERROR: CONNECTION INTERRUPTED.<br><br>Check browser console or verify Google Script deployment.';
+                // Only show error if feed is empty
+                if(feed.children.length === 0) {
+                    feed.innerHTML = 'SYSTEM ERROR: CONNECTION INTERRUPTED.<br><br>Check browser console or verify Google Script deployment.';
+                }
             });
         };
 
@@ -719,6 +812,8 @@
             })
             .then(() => {
                 msgField.value = '';
+                // Reset char count
+                document.getElementById('char-count').innerText = '150';
                 btn.innerText = "[ BROADCAST SUCCESS ]";
                 setTimeout(window.loadVoodooMessages, 2000);
                 setTimeout(() => { 
