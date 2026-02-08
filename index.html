@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dungeon World Chat - Sector 404</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         /* Base Styles & Mobile-First Design */
         body {
@@ -42,6 +45,9 @@
             text-transform: uppercase;
             text-shadow: 2px 2px #000;
             line-height: 1.1;
+            cursor: pointer;
+            user-select: none;
+            font-family: 'Share Tech Mono', monospace;
         }
 
         /* Rarity Classes */
@@ -51,163 +57,510 @@
 
         .achievement {
             color: #fff;
-            font-size: 1.3em;
+            font-size: 1.5em;
             font-weight: bold;
             margin: 10px 0;
             border-bottom: 2px solid #ff4500;
             padding-bottom: 5px;
+            font-family: 'Share Tech Mono', monospace;
         }
-        .ai-snark { color: #ffa500; font-style: italic; font-weight: bold; font-size: 1em; line-height: 1.4; }
+        .ai-snark { color: #ffa500; font-style: italic; font-weight: bold; font-size: 1.1em; line-height: 1.4; }
 
         /* Chat UI */
-        .chat-window { border: 2px solid #444; background: rgba(20, 20, 20, 0.95); padding: 12px; }
-        .chat-entry { margin-bottom: 18px; padding: 15px; border-radius: 6px; font-size: 0.95em; line-height: 1.5; }
+        .chat-window { border: 2px solid #444; background: rgba(20, 20, 20, 0.95); padding: 12px; min-height: 400px; transition: height 0.3s; }
+        .chat-entry { margin-bottom: 10px; padding: 15px; border-radius: 6px; font-size: 1em; line-height: 1.5; opacity: 0; }
 
+        /* Animation for Chat Entries */
+        .fade-in {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Character Colors */
         .donut { border-left: 6px solid #ff69b4; background: #2b121e; }
         .mordecai { border-left: 6px solid #00d4ff; background: #121c2b; }
         .quasar { border-left: 6px solid #ffcc00; background: #2b2512; }
         .casandra { border-left: 6px solid #00ff00; background: #122b1a; }
         .prepotente { border-left: 6px solid #fdfd96; background: #2b2b12; }
         .katia { border-left: 6px solid #00ffff; background: #122b2b; }
+        
+        /* New Characters */
+        .odette { border-left: 6px solid #9932cc; background: #2b122b; } /* Dark Orchid */
+        .elle { border-left: 6px solid #98fb98; background: #122b1b; } /* Pale Green */
+        .florin { border-left: 6px solid #daa520; background: #2b2212; } /* Goldenrod */
+        .zev { border-left: 6px solid #ff1493; background: #2b121c; } /* Deep Pink */
 
-        .username { font-weight: bold; display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.8em; }
+        .username { font-weight: bold; display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.9em; font-family: 'Share Tech Mono', monospace; letter-spacing: 0.5px; }
         .donut .username { color: #ff69b4; }
         .mordecai .username { color: #00d4ff; }
         .quasar .username { color: #ffcc00; }
         .casandra .username { color: #00ff00; }
         .prepotente .username { color: #fdfd96; }
         .katia .username { color: #00ffff; }
+        .odette .username { color: #9932cc; }
+        .elle .username { color: #98fb98; }
+        .florin .username { color: #daa520; }
+        .zev .username { color: #ff1493; }
 
         /* Floor Status */
-        .floor-status { margin-top: 25px; padding: 15px; border-left: 6px solid #ffcc00; background: #221e00; font-size: 0.85em; }
-        .status-header { color: #ffcc00; font-weight: bold; display: block; margin-bottom: 10px; text-transform: uppercase; }
+        .floor-status { margin-top: 25px; padding: 15px; border-left: 6px solid #ffcc00; background: #221e00; font-size: 1em; }
+        .status-header { color: #ffcc00; font-weight: bold; display: block; margin-bottom: 10px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; font-size: 1.2em; }
         .status-list { list-style: none; padding: 0; margin: 0; }
-        .status-list li { margin-bottom: 5px; }
+        .status-list li { margin-bottom: 8px; font-family: 'Share Tech Mono', monospace; }
 
         /* Footer & Buttons */
-        .node-footer { margin-top: 25px; border: 2px solid #00ff00; padding: 20px; text-align: center; background: #000; }
+        .node-footer { margin-top: 40px; border: 2px solid #00ff00; padding: 20px; text-align: center; background: #000; }
         .button {
-            display: block; width: 100%; box-sizing: border-box; margin-top: 15px; padding: 16px;
+            display: block; width: 100%; box-sizing: border-box; margin-top: 15px; padding: 18px;
             background-color: #00ff00; color: #000; font-weight: bold; text-decoration: none;
-            text-transform: uppercase; font-size: 1.1em; border-radius: 4px; border: none; cursor: pointer;
+            text-transform: uppercase; font-size: 1.2em; border-radius: 4px; border: none; cursor: pointer;
             transition: opacity 0.2s;
+            font-family: 'Share Tech Mono', monospace;
         }
         .button:active { opacity: 0.7; }
+        .button:disabled { background-color: #333; color: #666; cursor: not-allowed; }
 
         /* Share Options Styles */
         #share-options { display: none; margin-top: 15px; }
         .share-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
         .share-btn { margin: 0 !important; flex: 1; min-width: 80px; padding: 12px !important; font-size: 0.9em !important; color: white !important; }
 
+        /* Blinking Cursor for Voodoo Header */
+        .blinking-cursor::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Easter Egg Overlay */
+        #easter-egg-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: #ff0000;
+            font-family: 'Share Tech Mono', monospace;
+            border: 5px solid #ff0000;
+            box-sizing: border-box;
+        }
+
         @media (min-width: 600px) {
             body { padding: 30px; }
             .header { font-size: 2.2em; }
-            .achievement { font-size: 1.6em; }
+            .achievement { font-size: 1.8em; }
             .button { width: auto; display: inline-block; padding: 15px 40px; }
         }
     </style>
 </head>
 <body>
 
+    <div id="easter-egg-overlay">
+        <h1 style="font-size: 3em; margin-bottom: 10px;">!!! GLITCH DETECTED !!!</h1>
+        <p style="font-size: 1.5em; color: #fff;">CARL! YOU'VE UNLOCKED: GOD-TIER CRAWLER STATUS!</p>
+        <p style="font-size: 1.2em; font-style: italic; color: #888; margin-top: 20px;">(Nothing actually changed. Mordecai is still disappointed.)</p>
+        <button onclick="window.closeEasterEgg()" class="button" style="background: #ff0000; color: #fff; margin-top: 30px;">RESUME SIMULATION</button>
+    </div>
+
     <div class="system-ai">
-        <div class="header">!!! NEW ACHIEVEMENT !!!</div>
+        <div class="header" onclick="window.trackHeaderTaps()">!!! NEW ACHIEVEMENT !!!</div>
         <div class="achievement">"CON-FLOOR SURVIVOR"</div>
-        <p>YOU DID IT! You’ve successfully navigated the <strong>ATLANTA SKYBRIDGE GAUNTLET</strong>! You have survived the humidity, the smell of burnt rubber and expensive polyester, and the sheer, unadulterated chaos of sixty-thousand humans trying to occupy the same square inch of hotel carpet! IT IS A MIRACLE YOU HAVEN'T BEEN CRUSHED!</p>
-        <p class="ai-snark">REWARD: You’ve received a [Platinum] Badge Ribbon! It grants you +5 to Crowd Maneuvering and -10 to Personal Space. Also, Carl, look at the feet on these people! WHY DO YOU DO THIS TO ME?! GET BACK TO THE MESH!</p>
+        <p>YOU DID IT! You’ve successfully navigated the <strong>ATLANTA SKYBRIDGE GAUNTLET</strong>! You have survived the humidity, the smell of burnt rubber and expensive polyester, and the sheer, unadulterated chaos of sixty-thousand humans trying to occupy the same square inch of hotel carpet!</p>
+        <p id="main-ai-snark" class="ai-snark">REWARD: You’ve received a [Platinum] Badge Ribbon! It grants you +5 to Crowd Maneuvering and -10 to Personal Space. GET BACK TO THE MESH!</p>
     </div>
 
+    <!-- FULL CHARACTER CHAT (Dynamic) -->
     <div class="chat-window">
-        <div class="chat-entry donut">
-            <span class="username">Princess Donut Lvl 50 Queen Anne Chonk</span>
-            CARL! MONGO IS APPALLED! WHY ARE ALL THESE PEOPLE LOOKING AT A MAN IN A SPANDEX ONESIE? TELL THE NETWORK ADMIN TO BROADCAST MY IMAGE ON EVERY SCREEN IN THE HYATT IMMEDIATELY!
-        </div>
-
-        <div class="chat-entry prepotente">
-            <span class="username">Prepotente (Pony Extraordinaire)</span>
-            AAAAAAAAAAHHHHHH! MOTHER! THE ELEVATORS ARE A BORANT CONSPIRACY! THEY WANT US TO STARVE ON THE SKYBRIDGE! AAAAAAAAAAHHHHHHH!
-        </div>
-
-        <div class="chat-entry katia">
-            <span class="username">Katia (Level 42 Tank)</span>
-            Carl, I’ve found a path through the food court, but it’s guarded by a Level 60 'Line for Pizza.' We need to use this mesh node to coordinate the bypass!
-        </div>
-
-        <div class="chat-entry mordecai">
-            <span class="username">Mordecai (Manager)</span>
-            Stop screaming! Prepotente, the elevators have been broken since the tenth floor. Crawler, keep that signal steady! We need a clear link before the Skybridge becomes a total chokepoint.
-        </div>
-
-        <div class="chat-entry quasar">
-            <span class="username">Quasar (Legal Counsel/Certified Genius)</span>
-            CHOKEPOINT? I’ll sue the very concept of occupancy! I’ll sue the bricks! CRAWLER, YOUR RIGHT TO STAND IN THIS CROWDED HALLWAY IS CONSTITUTIONALLY PROTECTED BY ME!
-        </div>
-
-        <div class="chat-entry casandra">
-            <span class="username">Casandra (Exasperated Operations)</span>
-            EVERYONE SHUT UP! Crawler, keep the mesh open. If I lose my tactical overview because you were too busy looking at cosplayers, I will personally rewrite your respawn protocol!
+        <span class="username" style="color: #00ff00; display: block; margin-bottom: 10px; font-size: 1.2em;">[ LIVE SYSTEM CHAT ]</span>
+        <div id="character-feed">
+            <!-- JS will populate this -->
         </div>
     </div>
 
+    <!-- LIVE STATUS BLOCK -->
     <div class="floor-status">
         <span class="status-header">[ LIVE FLOOR STATUS: SECTOR ATLANTA ]</span>
         <ul class="status-list">
-            <li>🔸 ELEVATORS: [CRITICAL FAILURE] - USE STAIRS</li>
-            <li>🔸 HUMIDITY: 98% [SWAMP CONDITIONS]</li>
-            <li>🔸 HYDRATION: [WARNING] - PIZZA IS NOT A REPLACEMENT FOR WATER</li>
-            <li>🔸 CARPET: [MEMETIC HAZARD] - DO NOT STARE AT PATTERN</li>
-            <li>🔸 MESH STATUS: [OPTIMAL] - NODE !1fcff30a ACTIVE</li>
+            <li>⏳ LEVEL COLLAPSE IN: <span id="level-timer" style="color: #ff0000; font-weight: bold; font-family: 'Share Tech Mono', monospace;">CALCULATING...</span></li>
+            <li id="status-row-1">🔸 SCANNING SECTOR...</li>
+            <li id="status-row-2">🔸 SCANNING SECTOR...</li>
+            <li id="status-row-3">🔸 SCANNING SECTOR...</li>
         </ul>
     </div>
 
-    <div class="node-footer">
-        <strong style="color: #00ff00;">[ DRAGON CON MESH ACTIVE ]</strong><br>
-        <span style="color: #888;">NODE ID: !1fcff30a</span><br>
-        <a href="https://meshtastic.org/v/#CIrmv_4BElAKCSExZmNmZjMwYRIPb2JpLXdhbi1rZW1lc2hpGgRmMzBhIgbFMx_P8wooWEIgx5cjLfBcMK-Y-ZG_cuCi_jPojvkJoYq-P1lXSvX0YHxIAA" class="button">JOIN THE MESH</a>
+    <!-- Prepotente Panic Meter -->
+    <div class="floor-status" style="border-left-color: #fdfd96; margin-top: 15px;">
+        <span class="status-header">[ PREPOTENTE PANIC METER ]</span>
+        <div id="panic-bar" style="height: 20px; background: #111; border: 2px solid #fdfd96; position: relative; overflow: hidden; margin-top: 10px;">
+            <div id="panic-fill" style="height: 100%; background: linear-gradient(90deg, #fdfd96, #ff0000); width: 85%; transition: width 1s;"></div>
+        </div>
+        <p id="panic-text" style="font-size: 0.9em; margin-top: 8px; color: #fdfd96; font-weight: bold; text-transform: uppercase; font-family: 'Share Tech Mono', monospace;">⚠️ CURRENT STATUS: AAAAAAHHHHH!</p>
     </div>
 
     <div id="gen-container" class="system-ai" style="margin-top: 30px; border-style: dashed; background: #220000;">
         <div id="custom-header" class="header" style="font-size: 1.4em;">SYSTEM READY...</div>
         <div id="custom-title" class="achievement">"TAP FOR FATE"</div>
-        <p id="custom-body" style="font-size: 0.9em;">Generate a useless achievement based on your level of survival.</p>
-        <button onclick="generateAchievement()" class="button" style="background-color: #ff4500; color: white;">GENERATE ACHIEVEMENT</button>
+        <p id="custom-body" style="font-size: 1em;">Generate a useless achievement based on your level of survival.</p>
+
+        <button onclick="window.generateAchievement()" class="button" style="background-color: #ff4500; color: white;">GENERATE ACHIEVEMENT</button>
 
         <div id="share-options">
-            <p style="font-size: 0.8em; color: #ffcc00; margin-bottom: 10px;">BRAG TO THE FEED:</p>
+            <p style="font-size: 0.9em; color: #ffcc00; margin-bottom: 10px; font-family: 'Share Tech Mono', monospace;">BRAG TO THE FEED:</p>
             <div class="share-grid">
-                <button class="button share-btn" onclick="shareX()" style="background: #000;">X</button>
-                <button class="button share-btn" onclick="shareBlueSky()" style="background: #0085ff;">BlueSky</button>
-                <button class="button share-btn" onclick="shareThreads()" style="background: #444;">Threads</button>
-                <button class="button share-btn" onclick="copyToClipboard(event)" style="background: #00ff00; color: #000;">Copy</button>
+                <button class="button share-btn" onclick="window.shareX()" style="background: #000;">X</button>
+                <button class="button share-btn" onclick="window.shareBlueSky()" style="background: #0085ff;">BlueSky</button>
+                <button class="button share-btn" onclick="window.shareThreads()" style="background: #444;">Threads</button>
+                <button class="button share-btn" onclick="window.copyToClipboard(event)" style="background: #00ff00; color: #000;">Copy</button>
             </div>
         </div>
     </div>
 
-    <div class="chat-window" style="margin-top: 25px; border-color: #00ff00; margin-bottom: 50px;">
+    <!-- Voodoo Board -->
+    <div class="chat-window" style="margin-top: 25px; border-color: #00ff00; margin-bottom: 25px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <span class="username" style="color: #00ff00; margin: 0;">[ VOODOO BOARD: SECTOR ATLANTA ]</span>
-            <button onclick="loadVoodooMessages()" style="background: none; border: 1px solid #00ff00; color: #00ff00; font-size: 0.7em; padding: 2px 8px; cursor: pointer;">REFRESH</button>
+            <span class="username blinking-cursor" style="color: #00ff00; margin: 0; font-size: 1.2em;">[ VOODOO BOARD ]</span>
+            <button onclick="window.loadVoodooMessages()" style="background: none; border: 1px solid #00ff00; color: #00ff00; font-size: 0.8em; padding: 4px 10px; cursor: pointer; font-family: 'Share Tech Mono', monospace;">REFRESH</button>
         </div>
         
-        <div id="voodoo-feed" style="height: 250px; overflow-y: auto; background: #000; padding: 10px; font-family: monospace; font-size: 0.85em; border: 1px solid #333; margin-bottom: 15px; color: #00ff00;">
+        <div id="voodoo-feed" style="height: 300px; overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; background: #000; padding: 10px; font-family: 'Share Tech Mono', monospace; font-size: 1.1em; border: 1px solid #333; margin-bottom: 15px; color: #00ff00; line-height: 1.5;">
             SYSTEM: INITIALIZING VOODOO FEED...
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 8px;">
-            <input type="text" id="voodoo-name" placeholder="[ CRAWLER DESIGNATION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 10px; font-family: monospace; width: 100%; box-sizing: border-box;">
-            <textarea id="voodoo-msg" placeholder="[ UNENCRYPTED BURST TRANSMISSION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 10px; font-family: monospace; height: 60px; width: 100%; box-sizing: border-box; resize: none;"></textarea>
-            <button onclick="postToVoodoo()" class="button" style="margin: 0; padding: 12px; font-size: 0.9em;">[ BROADCAST TO SECTOR ]</button>
+            <input type="text" id="voodoo-name" maxlength="25" placeholder="[ CRAWLER DESIGNATION ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 14px; font-family: 'Share Tech Mono', monospace; width: 100%; box-sizing: border-box; font-size: 1.1em;">
+            <textarea id="voodoo-msg" maxlength="150" placeholder="[ UNENCRYPTED BURST TRANSMISSION ]&#10;[ MAX 150 CHARS - KEEP IT PG-13 OR GET ACCELERATED ]" style="background: #111; border: 1px solid #00ff00; color: #00ff00; padding: 14px; font-family: 'Share Tech Mono', monospace; height: 100px; width: 100%; box-sizing: border-box; resize: none; font-size: 1.1em;"></textarea>
+            <button onclick="window.postToVoodoo()" class="button" style="margin: 0; padding: 16px; font-size: 1.1em;">[ BROADCAST TO SECTOR ]</button>
         </div>
     </div>
 
+    <!-- MESH NETWORK FOOTER (MOVED TO BOTTOM) -->
+    <div class="node-footer">
+        <strong style="color: #00ff00; font-family: 'Share Tech Mono', monospace; font-size: 1.2em;">[ DRAGON CON MESH ACTIVE ]</strong><br>
+        <span style="color: #888; font-family: 'Share Tech Mono', monospace;">NODE ID: !1fcff30a</span><br>
+        <a href="https://meshtastic.org/v/#CIrmv_4BElAKCSExZmNmZjMwYRIPb2JpLXdhbi1rZW1lc2hpGgRmMzBhIgbFMx_P8wooWEIgx5cjLfBcMK-Y-ZG_cuCi_jPojvkJoYq-P1lXSvX0YHxIAA" class="button">JOIN THE MESH</a>
+    </div>
+
     <script>
-        // Use window explicitly to avoid scope issues in blob/restricted environments
         window.currentTitle = "";
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7ljyRllZ4a0OYp3B7Nrfw3Bn3QUMsXrUtJ44RlnDUk9fL8I0AyeocNrw1jXLbnDK6wg/exec';
 
+        // Random Snark Array
+        const AI_SNARKS = [
+            "Carl, stop looking at that booth. We have a schedule!",
+            "THE ELEVATORS ARE STILL BROKEN, CARL!",
+            "Princess Donut demands you acknowledge Mongo immediately.",
+            "Prepotente is having a meltdown in 3... 2... 1...",
+            "I've detected 47 people wearing the same cosplay. This is a nightmare.",
+            "Carl, those aren't oats. Please stop eating the decorative potpourri.",
+            "Mordecai wants you to know he's very disappointed in your choices.",
+            "SYSTEM: Detecting dangerous levels of body paint and humidity.",
+            "Carl, look at the feet on these people! WHY DO YOU DO THIS TO ME?!"
+        ];
+
+        // Dynamic Chat Data
+        const CHAT_CHARACTERS = [
+            {
+                id: 'donut',
+                name: 'Princess Donut Lvl 50 Queen Anne Chonk',
+                lines: [
+                    "CARL! MONGO IS APPALLED! WHY ARE ALL THESE PEOPLE LOOKING AT A MAN IN A SPANDEX ONESIE? TELL THE NETWORK ADMIN TO BROADCAST MY IMAGE ON EVERY SCREEN IN THE HYATT IMMEDIATELY!",
+                    "CARL! I FOUND A BOOTH SELLING TIARAS, BUT THEY ARE CLEARLY INFERIOR QUALITY. MONGO TRIED TO EAT ONE. IT WAS ADORABLE.",
+                    "WHY IS EVERYONE SWEATING? IT IS DISGUSTING. MORDECAI, MAKE THE AIR CONDITIONING COLDER! USE YOUR MANAGER POWERS!",
+                    "CARL! THAT ROBOT JUST BEEPED AT ME! IS IT A BOMB? IT'S PROBABLY A BOMB. MONGO, DESTROY IT!",
+                    "I AM THE QUEEN OF THIS CONVENTION! WHY IS THERE NO RED CARPET IN THE LOBBY? UNACCEPTABLE!",
+                    "CARL! SIGNET SAYS SHE FOUND A BOOTH WITH CATNIP. WE ARE GOING THERE. NOW!"
+                ]
+            },
+            {
+                id: 'prepotente',
+                name: 'Prepotente (Pony Extraordinaire)',
+                lines: [
+                    "AAAAAAAAAAHHHHHH! MOTHER! THE ELEVATORS ARE A BORANT CONSPIRACY! THEY WANT US TO STARVE ON THE SKYBRIDGE!",
+                    "AAAAAAAAAAHHHHHH! THE LINE FOR BADGES IS ETERNAL! I WILL WITHER AND PERISH BEFORE I GET MY LANYARD!",
+                    "AAAAAAAAAAHHHHHH! THAT MAN IS DRESSED AS A WOLF! HE IS A FRAUD! AAAAAAAAAAHHHHHHH!",
+                    "AAAAAAAAAAHHHHHH! I HAVE EATEN A STICKER! IT TASTES OF ADHESIVE AND REGRET!"
+                ]
+            },
+            {
+                id: 'katia',
+                name: 'Katia (Level 42 Tank)',
+                lines: [
+                    "Carl, I’ve found a path through the food court, but it’s guarded by a Level 60 'Line for Pizza.' We need to use this mesh node to coordinate the bypass!",
+                    "I just saw a crawler dual-wielding light sabers. I don't think that's in the rulebook, Carl. Should we be worried?",
+                    "My map says the panel is in this room, but it's just a closet full of chairs. Is this a trap?",
+                    "I think I just accidentally joined a cult in the gaming hall. They gave me a ribbon."
+                ]
+            },
+            {
+                id: 'mordecai',
+                name: 'Mordecai (Manager)',
+                lines: [
+                    "Stop screaming! Prepotente, the elevators have been broken since the tenth floor. Crawler, keep that signal steady!",
+                    "Donut, for the last time, you cannot join the parade. You are a cat. Carl, focus on the objective. We need to find the charging station.",
+                    "If I see one more person doing the Macarena, I'm going to have an aneurysm. Keep moving, Crawlers.",
+                    "Drink water. I don't want to have to explain to the showrunners why my crawlers passed out in a fur suit."
+                ]
+            },
+            {
+                id: 'quasar',
+                name: 'Quasar (Legal Counsel/Certified Genius)',
+                lines: [
+                    "CHOKEPOINT? I’ll sue the very concept of occupancy! I’ll sue the bricks! CRAWLER, YOUR RIGHT TO STAND HERE IS PROTECTED!",
+                    "Overpriced water? That's extortion! I'll file a class-action lawsuit against hydration itself! I'll sue the molecule!",
+                    "They wouldn't let me into the VIP lounge? I'll buy the lounge! Then I'll sue the bouncer for emotional distress!",
+                    "This badge requires a waiver? I don't sign waivers, I rewrite them! I OWN THE FINE PRINT!"
+                ]
+            },
+            {
+                id: 'casandra',
+                name: 'Casandra (Exasperated Operations)',
+                lines: [
+                    "EVERYONE SHUT UP! Crawler, keep the mesh open. If I lose my tactical overview, I will personally rewrite your respawn protocol!",
+                    "I am tracking 50,000 entities in this sector and they are all moving randomly. It's tactical suicide. Maintain formation!",
+                    "Who unauthorized this broadcast? Actually, never mind. Just keep the signal up. I need to monitor the buffet line.",
+                    "If one more person asks me where the bathroom is, I'm going to start venting atmosphere."
+                ]
+            },
+            {
+                id: 'odette',
+                name: 'Odette (Showrunner)',
+                lines: [
+                    "Ratings are down in the Vendor Hall. Spice it up! Maybe start a small fire? Just a little one.",
+                    "Who authorized that cosplay? It infringes on Borant copyright. I want names!",
+                    "I need more drama in the food court! Someone flip a table! The viewers are bored!",
+                    "Look at those engagement numbers! The 'Elevator Failure' arc is testing really well with the Valtay."
+                ]
+            },
+            {
+                id: 'elle',
+                name: 'Elle',
+                lines: [
+                    "Well hello there, tall, dark, and armored. Care to share a potion?",
+                    "I saw a barbarian in the lobby who could definitely crush a melon. I'm intrigued.",
+                    "My feet hurt, but this outfit is worth the pain. Stop staring... actually, don't stop.",
+                    "Anyone want to help me find some trouble? The fun kind, obviously."
+                ]
+            },
+            {
+                id: 'florin',
+                name: 'Florin',
+                lines: [
+                    "Oi! Watch your back in the dealer's room, mates. It's a bloody shark tank in there.",
+                    "Reckon we bypass the shuttle line. It's chock-a-block. We walk.",
+                    "Don't be a drongo. That 'free' sample is definitely trapped.",
+                    "Fair dinkum, the prices at the food court are daylight robbery. Who's got rations?"
+                ]
+            },
+            {
+                id: 'zev',
+                name: 'Zev (Marketing)',
+                lines: [
+                    "We're live in 5! Look heroic! Flex something! The outer systems are watching!",
+                    "The sponsors love the spandex look! Can you strike a pose near the trash can? It's 'gritty'.",
+                    "Can we get a close up on that badge? It's shiny! Shiny things poll well with the kuo-toa!",
+                    "Donut! The camera loves you! Ignore the goblin, look at the lens!"
+                ]
+            }
+        ];
+
+        window.headerTapCount = 0;
+        window.tapTimer = null;
+
+        window.trackHeaderTaps = function() {
+            window.headerTapCount++;
+            clearTimeout(window.tapTimer);
+            if (window.headerTapCount >= 5) {
+                window.triggerEasterEgg();
+                window.headerTapCount = 0;
+            } else {
+                window.tapTimer = setTimeout(() => { window.headerTapCount = 0; }, 2000);
+            }
+        };
+
+        window.triggerEasterEgg = function() {
+            document.body.classList.add('glitch');
+            document.getElementById('panic-fill').style.width = '100%';
+            document.getElementById('panic-text').innerText = "⚠️ SYSTEM CRITICAL: CARL IS CHEATING!";
+            document.getElementById('easter-egg-overlay').style.display = 'flex';
+        };
+
+        window.closeEasterEgg = function() {
+            document.body.classList.remove('glitch');
+            document.getElementById('easter-egg-overlay').style.display = 'none';
+            window.initPanicMeter();
+        };
+
+        window.chatInterval = null;
+        
+        window.initChatCycle = function() {
+            const container = document.getElementById('character-feed');
+            container.innerHTML = ''; 
+            
+            // Initial fill
+            for(let i=0; i<4; i++) {
+                window.addChatMessage();
+            }
+
+            if (window.chatInterval) clearInterval(window.chatInterval);
+            window.chatInterval = setInterval(window.addChatMessage, 9000);
+        };
+
+        window.addChatMessage = function() {
+            const container = document.getElementById('character-feed');
+            // Use random chat line logic
+            const char = CHAT_CHARACTERS[Math.floor(Math.random() * CHAT_CHARACTERS.length)];
+            const line = char.lines[Math.floor(Math.random() * char.lines.length)];
+            
+            const entry = document.createElement('div');
+            entry.className = `chat-entry ${char.id} fade-in`;
+            entry.innerHTML = `<span class="username">${char.name}</span>${line}`;
+            
+            container.appendChild(entry);
+            
+            // Limit to 5 visible messages
+            if (container.children.length > 5) {
+                container.removeChild(container.firstChild);
+            }
+        };
+
         window.onload = function() {
+            // Apply random snark
+            const randomSnark = AI_SNARKS[Math.floor(Math.random() * AI_SNARKS.length)];
+            document.getElementById('main-ai-snark').innerText = `REWARD: ${randomSnark}`;
+
+            // Init Chat Cycle
+            window.initChatCycle();
+
+            // Init Dynamic Statuses
             setTimeout(function() {
                 window.loadVoodooMessages();
+                window.initPanicMeter();
+                window.initLiveStats();
             }, 500);
+        };
+
+        // Panic Meter Logic
+        window.panicInterval = null;
+        window.initPanicMeter = function() {
+            if (window.panicInterval) clearInterval(window.panicInterval);
+            const fill = document.getElementById('panic-fill');
+            const text = document.getElementById('panic-text');
+            const screams = [
+                "⚠️ CURRENT STATUS: AAAAAAHHHHH!",
+                "⚠️ CURRENT STATUS: ELEVATOR SABOTAGE!",
+                "⚠️ CURRENT STATUS: OATS DEPLETION!",
+                "⚠️ CURRENT STATUS: MOTHERRR!",
+                "⚠️ CURRENT STATUS: UNACCEPTABLE!"
+            ];
+
+            window.panicInterval = setInterval(() => {
+                const newWidth = Math.floor(Math.random() * (98 - 75 + 1)) + 75;
+                fill.style.width = newWidth + '%';
+                if (newWidth > 94) {
+                    text.innerText = screams[Math.floor(Math.random() * screams.length)];
+                } else if (newWidth < 78) {
+                    text.innerText = "⚠️ CURRENT STATUS: CONTROLLED SOBBING";
+                } else {
+                    text.innerText = "⚠️ CURRENT STATUS: AAAAAAHHHHH!";
+                }
+            }, 3000);
+        };
+
+        // Live Stats Logic (Dynamic Status Lines)
+        window.statsInterval = null;
+        window.statusRotationInterval = null;
+        
+        window.initLiveStats = function() {
+            if (window.statsInterval) clearInterval(window.statsInterval);
+            if (window.statusRotationInterval) clearInterval(window.statusRotationInterval);
+
+            // Pool of random statuses
+            const statusPool = [
+                { label: "ELEVATORS", value: "[CRITICAL FAILURE]", color: "#ff0000" },
+                { label: "ELEVATORS", value: "FULL. ALWAYS FULL.", color: "#ffcc00" },
+                { label: "TEMPERATURE", value: "SURFACE OF THE SUN", color: "#ff4500" },
+                { label: "HUMIDITY", value: "SWAMP CONDITIONS", color: "#00ccff" },
+                { label: "ROOM LINE", value: "ETERNAL", color: "#ff0000" },
+                { label: "ROOM LINE", value: "WRAPPED AROUND BUILDING", color: "#ffcc00" },
+                { label: "CURRENT BOSS", value: "THE FIRE MARSHAL", color: "#ff0000" },
+                { label: "CURRENT BOSS", value: "3AM WAFFLE HOUSE", color: "#ffcc00" },
+                { label: "CURRENT BOSS", value: "THE SUN", color: "#ffcc00" },
+                { label: "SECTOR POP", value: "85,420 [OVERCROWDED]", color: "#ffcc00" },
+                { label: "AIR QUALITY", value: "CON-CRUD DETECTED", color: "#00ff00" },
+                { label: "HYDRATION", value: "PIZZA IS NOT WATER", color: "#00ccff" },
+                { label: "SHUTTLE", value: "LOST IN THE VOID", color: "#ff0000" },
+                { label: "CARPET", value: "DO NOT STARE", color: "#cc00ff" },
+                { label: "VIBE", value: "SCREAMING", color: "#ff0000" },
+                { label: "VIBE", value: "CHAOTIC GOOD", color: "#00ff00" },
+                { label: "COSTUME", value: "HOT GLUE FAILURE", color: "#ffcc00" },
+                { label: "BADGE LINE", value: "CIRCLING THE BLOCK", color: "#ff0000" },
+                { label: "SLEEP", value: "OPTIONAL", color: "#00ccff" }
+            ];
+
+            const updateStatuses = () => {
+                // Shuffle and pick 3 unique items
+                const shuffled = [...statusPool].sort(() => 0.5 - Math.random());
+                const selected = shuffled.slice(0, 3);
+                
+                for(let i=0; i<3; i++) {
+                    const el = document.getElementById(`status-row-${i+1}`);
+                    if(el) {
+                        el.innerHTML = `🔸 ${selected[i].label}: <span style="color: ${selected[i].color}; font-weight: bold;">${selected[i].value}</span>`;
+                    }
+                }
+            };
+
+            // Run immediately and then rotate every 12 seconds
+            updateStatuses();
+            window.statusRotationInterval = setInterval(updateStatuses, 12000);
+
+            // Level Collapse Timer Logic (Labor Day 5PM)
+            const timerEl = document.getElementById('level-timer');
+            const now = new Date();
+            const year = now.getFullYear();
+            
+            // Calculate Labor Day (1st Monday of Sept)
+            let laborDay = new Date(year, 8, 1); 
+            while (laborDay.getDay() !== 1) {
+                laborDay.setDate(laborDay.getDate() + 1);
+            }
+            laborDay.setHours(17, 0, 0, 0);
+
+            // If passed, target next year
+            if (now > laborDay) {
+                laborDay.setFullYear(year + 1);
+                laborDay.setMonth(8);
+                laborDay.setDate(1);
+                while (laborDay.getDay() !== 1) {
+                    laborDay.setDate(laborDay.getDate() + 1);
+                }
+                laborDay.setHours(17, 0, 0, 0);
+            }
+
+            window.statsInterval = setInterval(() => {
+                const currentTime = new Date().getTime();
+                const distance = laborDay.getTime() - currentTime;
+
+                if (distance < 0) {
+                    timerEl.innerText = "COLLAPSE IMMINENT";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                timerEl.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
         };
 
         window.generateAchievement = function() {
@@ -289,19 +642,38 @@
             });
         };
 
+        // Enhanced Profanity Filter
+        window.sanitize = function(str) {
+            if (!str) return "";
+            let clean = str.replace(/<\/?[^>]+(>|$)/g, "");
+            
+            // Enhanced word list with common variants and leetspeak
+            const blockedWords = [
+                "fuck", "fuk", "fck", "f u c k", "sh!t", "shit", "sh1t", "bitch", "b!tch", "b1tch",
+                "cunt", "twat", "wank", "pussy", "dick", "d1ck", "cock", "penis", "vagina",
+                "asshole", "a$$hole", "bastard", "slut", "whore",
+                "nazi", "n@zi", "racist", "fag", "f@g", "nigger", "nigga", "n1gger", "kike", "spic",
+                "retard", "r3tard", "chink", "tranny", "shemale", "dyke", "gook", "beaner", "coon",
+                "rapist", "pedophile", "pedo", "pdf file", "PDF file"
+            ];
+            
+            blockedWords.forEach(word => {
+                // Case-insensitive and catches variations with spaces/symbols
+                const regex = new RegExp(word.split('').join('[\\s\\W]*'), "gi");
+                clean = clean.replace(regex, "[REDACTED]");
+            });
+            
+            // Enforce length limit
+            return clean.trim().substring(0, 150);
+        };
+
         window.loadVoodooMessages = function() {
             const feed = document.getElementById('voodoo-feed');
             feed.innerHTML = 'SYSTEM: ACCESSING VOODOO STREAM...';
-
-            fetch(SCRIPT_URL, { 
-                method: "GET",
-                mode: "cors",
-                cache: "no-store",
-                credentials: "omit",
-                redirect: "follow"
-            })
+            const cacheBuster = SCRIPT_URL + (SCRIPT_URL.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+            fetch(cacheBuster, { method: "GET", redirect: "follow" })
             .then(res => {
-                if (!res.ok) throw new Error('Network response was not ok');
+                if (!res.ok) throw new Error('Network response not ok');
                 return res.json();
             })
             .then(data => {
@@ -309,42 +681,39 @@
                 if (data && Array.isArray(data)) {
                     data.reverse().forEach(row => {
                         const entry = document.createElement('div');
-                        entry.style.marginBottom = "10px";
-                        entry.style.borderBottom = "1px solid #1a1a1a";
-                        entry.style.paddingBottom = "5px";
-                        entry.innerHTML = `<span style="color: #888; font-size: 0.8em;">[${row[1] || 'Unknown'}]</span><br>${row[2]}`;
+                        entry.style.marginBottom = "15px";
+                        entry.style.borderBottom = "1px solid #222";
+                        entry.style.paddingBottom = "8px";
+                        const displayName = window.sanitize(row[1] || 'Unknown Designation');
+                        const displayMsg = window.sanitize(row[2] || 'Empty Transmission');
+                        entry.innerHTML = `<span style="color: #ffcc00; font-size: 0.9em; font-weight: bold;">[${displayName}]</span><br>${displayMsg}`;
                         feed.appendChild(entry);
                     });
-                    if (data.length === 0) {
-                        feed.innerHTML = 'SYSTEM: NO TRANSMISSIONS FOUND.';
-                    }
+                    if (data.length === 0) feed.innerHTML = 'SYSTEM: NO TRANSMISSIONS FOUND.';
                 }
             })
             .catch(err => {
                 console.error("Voodoo Load Error:", err);
-                feed.innerHTML = 'SYSTEM ERROR: CONNECTION INTERRUPTED.<br><br>Ensure the Google Script is deployed for "Anyone" and redirected to follow.';
+                feed.innerHTML = 'SYSTEM ERROR: CONNECTION INTERRUPTED.<br><br>Check browser console or verify Google Script deployment.';
             });
         };
 
         window.postToVoodoo = function() {
             const nameField = document.getElementById('voodoo-name');
             const msgField = document.getElementById('voodoo-msg');
-            const name = nameField.value.trim() || 'Anonymous';
-            const message = msgField.value.trim();
-
+            const name = window.sanitize(nameField.value) || 'Anonymous';
+            const message = window.sanitize(msgField.value);
             if (!message) return;
-
-            const btn = document.querySelector('button[onclick="postToVoodoo()"]');
+            const btn = document.querySelector('button[onclick="window.postToVoodoo()"]');
+            const originalText = btn.innerText;
             btn.innerText = "[ TRANSMITTING... ]";
             btn.disabled = true;
-
             const formData = new URLSearchParams();
             formData.append('name', name);
             formData.append('message', message);
-
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors',
+                mode: 'no-cors', 
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formData.toString()
             })
@@ -353,7 +722,7 @@
                 btn.innerText = "[ BROADCAST SUCCESS ]";
                 setTimeout(window.loadVoodooMessages, 2000);
                 setTimeout(() => { 
-                    btn.innerText = "[ BROADCAST TO SECTOR ]"; 
+                    btn.innerText = originalText; 
                     btn.disabled = false;
                 }, 4000);
             })
@@ -361,7 +730,7 @@
                 console.error("Voodoo Post Error:", err);
                 btn.innerText = "[ TRANSMISSION FAILED ]";
                 btn.disabled = false;
-                setTimeout(() => { btn.innerText = "[ BROADCAST TO SECTOR ]"; }, 3000);
+                setTimeout(() => { btn.innerText = originalText; }, 3000);
             });
         };
     </script>
