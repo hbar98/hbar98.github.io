@@ -19,6 +19,7 @@
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
             transition: background-color 0.5s ease;
+            padding-top: 50px; /* Space for ticker */
         }
 
         /* Achievement Box & Glitch Effect */
@@ -50,6 +51,20 @@
             user-select: none;
             font-family: 'Share Tech Mono', monospace;
             transition: color 0.5s ease;
+        }
+
+        /* Crawler ID Style - Updated for prominence */
+        .crawler-id-text {
+            font-family: 'Share Tech Mono', monospace;
+            color: #ffcc00;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255, 69, 0, 0.5);
+            padding-bottom: 10px;
+            transition: color 0.5s ease, border-color 0.5s ease;
         }
 
         /* Rarity Classes */
@@ -151,6 +166,36 @@
         }
         @keyframes pulse-warning { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
+        /* Ticker Styles */
+        .ticker-wrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #111;
+            border-bottom: 2px solid #ff4500;
+            overflow: hidden;
+            height: 35px;
+            line-height: 35px;
+            z-index: 990; /* Below toggle buttons */
+            transition: border-color 0.5s ease;
+        }
+
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: ticker 900s linear infinite; 
+            color: #ffcc00;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
         /* Easter Egg Overlay */
         #easter-egg-overlay {
             display: none;
@@ -184,6 +229,11 @@
         body.donut-theme .header {
             color: #ff69b4;
             text-shadow: 2px 2px #330033;
+        }
+
+        body.donut-theme .crawler-id-text {
+            color: #ff99cc;
+            border-bottom-color: #ff1493;
         }
 
         body.donut-theme .achievement {
@@ -235,7 +285,7 @@
 
         body.donut-theme .button {
             background-color: #ff69b4 !important;
-            color: #ffffff !important;
+            color: #000000 !important; /* Changed to Black for readability */
         }
 
         /* Override Panic Meter in Donut Mode */
@@ -260,7 +310,8 @@
         }
         body.donut-theme #voodoo-board-container button {
              border-color: #ff69b4 !important;
-             color: #ff69b4 !important;
+             color: #000000 !important; /* Black text for buttons */
+             background-color: #ff69b4 !important;
         }
         body.donut-theme #voodoo-board-container input,
         body.donut-theme #voodoo-board-container textarea {
@@ -278,8 +329,17 @@
             color: #ff69b4 !important;
         }
 
+        /* Override Ticker in Donut Mode */
+        body.donut-theme .ticker-wrap {
+            border-bottom-color: #ff69b4;
+            background: #2a0e2a;
+        }
+        body.donut-theme .ticker {
+            color: #ffccff;
+        }
+
         @media (min-width: 600px) {
-            body { padding: 30px; }
+            body { padding: 30px; padding-top: 60px; }
             .header { font-size: 2.2em; }
             .achievement { font-size: 1.8em; }
             .button { width: auto; display: inline-block; padding: 15px 40px; }
@@ -288,8 +348,13 @@
 </head>
 <body>
     
+    <!-- System Ticker -->
+    <div class="ticker-wrap">
+        <div class="ticker" id="system-ticker"></div>
+    </div>
+
     <!-- Theme Toggle -->
-    <button id="theme-toggle" onclick="window.toggleDonutMode()" title="Toggle Donut Mode" style="position: fixed; top: 15px; right: 15px; z-index: 999; font-size: 2em; background: none; border: none; cursor: pointer; filter: drop-shadow(0 0 5px #000);">🕶️</button>
+    <button id="theme-toggle" onclick="window.toggleDonutMode()" title="Toggle Donut Mode" style="position: fixed; top: 45px; right: 15px; z-index: 999; font-size: 2em; background: none; border: none; cursor: pointer; filter: drop-shadow(0 0 5px #000);">🕶️</button>
 
     <div id="easter-egg-overlay">
         <h1 style="font-size: 3em; margin-bottom: 10px;">!!! GLITCH DETECTED !!!</h1>
@@ -299,15 +364,16 @@
     </div>
 
     <div class="system-ai">
+        <div id="crawler-id" class="crawler-id-text">[ ID: UNKNOWN ]</div>
         <div class="header" onclick="window.trackHeaderTaps()">!!! NEW ACHIEVEMENT !!!</div>
         <div class="achievement" id="main-achievement-title">"CON-FLOOR SURVIVOR"</div>
-        <p>YOU DID IT! You’ve successfully navigated the <strong>ATLANTA SKYBRIDGE GAUNTLET</strong>! You have survived the humidity, the smell of burnt rubber and expensive polyester, and the sheer, unadulterated chaos of sixty-thousand humans trying to occupy the same square inch of hotel carpet!</p>
+        <p id="main-achievement-body">YOU DID IT! You’ve successfully navigated the <strong>ATLANTA SKYBRIDGE GAUNTLET</strong>! You have survived the humidity, the smell of burnt rubber and expensive polyester, and the sheer, unadulterated chaos of sixty-thousand humans trying to occupy the same square inch of hotel carpet!</p>
         <p id="main-ai-snark" class="ai-snark">REWARD: You’ve received a [Platinum] Badge Ribbon! It grants you +5 to Crowd Maneuvering and -10 to Personal Space. GET BACK TO THE MESH!</p>
     </div>
 
     <!-- FULL CHARACTER CHAT (Dynamic) -->
     <div class="chat-window">
-        <span class="username" style="color: #00ff00; display: block; margin-bottom: 10px; font-size: 1.2em;">[ LIVE SYSTEM CHAT ]</span>
+        <span class="username" style="color: #00ff00; display: block; margin-bottom: 10px; font-size: 1.2em;" id="live-chat-header">[ LIVE SYSTEM CHAT ]</span>
         <div id="character-feed" aria-live="polite">
             <!-- JS will populate this -->
         </div>
@@ -326,15 +392,15 @@
 
     <!-- Prepotente Panic Meter -->
     <div class="floor-status" style="border-left-color: #fdfd96; margin-top: 15px;">
-        <span class="status-header">[ PREPOTENTE PANIC METER ]</span>
+        <span class="status-header" id="panic-header">[ PREPOTENTE PANIC METER ]</span>
         <div id="panic-bar" style="height: 30px; background: #111; border: 2px solid #fdfd96; position: relative; overflow: hidden; margin-top: 10px;">
             <div id="panic-fill" style="height: 100%; background: linear-gradient(90deg, #fdfd96, #ff0000); width: 85%; transition: width 1s;"></div>
         </div>
-        <p id="panic-text" style="font-size: 0.9em; margin-top: 8px; color: #fdfd96; font-weight: bold; text-transform: uppercase; font-family: 'Share Tech Mono', monospace;">⚠️ CURRENT STATUS: AAAAAAHHHHH!</p>
+        <p id="panic-text" style="font-size: 0.9em; margin-top: 8px; color: #fdfd96; font-weight: bold; text-transform: uppercase; font-family: 'Share Tech Mono', monospace;">🐐 CURRENT STATUS: AAAAAAHHHHH!</p>
     </div>
 
     <!-- NFC HINT -->
-    <div class="nfc-hint">
+    <div class="nfc-hint" id="nfc-hint">
         [ SYSTEM WARNING: PROXIMITY SCAN DETECTED. TAP CHIP FOR UNSTABLE DATA UPLOAD ]
     </div>
 
@@ -392,27 +458,166 @@
     <script>
         window.currentTitle = "";
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7ljyRllZ4a0OYp3B7Nrfw3Bn3QUMsXrUtJ44RlnDUk9fL8I0AyeocNrw1jXLbnDK6wg/exec';
+        const FAVICON_SYSTEM = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23000000'/><path fill='%23ffffff' d='M35,20 L55,20 C55,20 60,50 80,65 C85,68 88,72 85,76 C82,80 75,80 70,80 L35,80 C25,80 28,65 30,50 Z'/><circle cx='80' cy='72' r='3' fill='%23000000'/></svg>";
+        const FAVICON_DONUT = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232a0e2a'/><path fill='%23ffd700' d='M20,60 L80,60 L90,30 L70,50 L50,10 L30,50 L10,30 Z'/><circle cx='50' cy='10' r='6' fill='%23ff69b4'/><circle cx='10' cy='30' r='4' fill='%23ff69b4'/><circle cx='90' cy='30' r='4' fill='%23ff69b4'/></svg>";
+
+        // Ticker Messages (Randomized on Load)
+        const SYSTEM_UPDATES = [
+          "[SYSTEM PATCH v404.1] Fixed crawler exploit: No more duplicating badge ribbons in skybridge lobbies. Carl, we see you.",
+          "[SYSTEM PATCH v404.2] Nerfed 'Humidity Debuff' by 12%—viewers complained about excessive sweating ASMR. Prepotente still whines.",
+          "[SYSTEM PATCH v404.3] Added new achievement: 'Con-Floor Survivor'—+5 to Crowd Dodge, -10 to Personal Space. Donut approves.",
+          "[SYSTEM PATCH v404.4] Emergency hotfix: Elevators now respawn 20% slower. Blame the fire marshal boss encounter.",
+          "[SYSTEM PATCH v404.5] Buffed Mongo's 'Tiara Rage' ability—now shreds vendor booths. Princess Donut petitions granted.",
+          "[SYSTEM PATCH v404.6] Removed 'Free Sample Mimic' from food court. 47 crawlers consumed. Apologies to Florin.",
+          "[SYSTEM PATCH v404.7] Quasar Legal Update: Class-action nerf to overpriced water vendors. Hydration is now a right.",
+          "[SYSTEM PATCH v404.8] Patch notes for patch notes: Fixed AI snark overflow. Mordecai remains disappointed.",
+          "[SYSTEM PATCH v404.9] New floor boss: 'The Eternal Line'—eternal taunt immunity required. Katia, your tank strat OP.",
+          "[SYSTEM PATCH v404.10] Donut Mode activated site-wide: +20% sass, pink filters mandatory. Mongo demands tribute.",
+          "[SYSTEM PATCH v404.11] Fixed Voodoo Board ghosting—messages now persist. No more 'transmission failed' exploits.",
+          "[SYSTEM PATCH v404.12] Nerfed Prepotente Panic Meter: Now caps at 95% to prevent server sobs. Mother unavailable.",
+          "[SYSTEM PATCH v404.13] Added Mesh Network integration: +10% signal in Hyatt lobbies. Join or perish.",
+          "[SYSTEM PATCH v404.14] Emergency buff: 'Con-Crud Resistance Potion' now craftable from pizza boxes. Elle tested.",
+          "[SYSTEM PATCH v404.15] Carl Exploit Closed: Foot photos no longer grant god-tier framing kits. Footage scrubbed.",
+          "[SYSTEM PATCH v404.16] Odette Showrunner Note: Elevator Fail arc trending—extended by 48 hours for ratings.",
+          "[SYSTEM PATCH v404.17] Fixed achievement generator RNG: 'Sticky Skybridge' now 100% useless as advertised.",
+          "[SYSTEM PATCH v404.18] Casandra Ops Patch: Sector Atlanta entity cap raised to 85k. Maintain formation, idiots.",
+          "[SYSTEM PATCH v404.19] Zev Marketing Buff: Share buttons now grant +1 viewer engagement. Brag responsibly.",
+          "[SYSTEM PATCH v404.20] Growler Gary Cameo: Left Hand Whiskey restocked. 14 donations appreciated.",
+          "[SYSTEM PATCH v404.21] Level collapse timer accuracy: Now syncs to Labor Day 5PM. Pack your respawn kit.",
+          "[SYSTEM PATCH v404.22] Nerfed carpet hypnosis: 'DO NOT STARE' warning now voice-activated. Saves lives.",
+          "[SYSTEM PATCH v404.23] Princess Donut Petition: Tiara booths upgraded to celestial. Mongo chomps approved.",
+          "[SYSTEM PATCH v404.24] Quasar Sues Patch: Waivers rewritten—crawlers own the fine print now.",
+          "[SYSTEM PATCH v404.25] Fixed panic bar overflow: No more 'AAAAAHHHHH!' server crashes. Prepotente muted temporarily.",
+          "[SYSTEM PATCH v404.26] New rare drop: 'Priority Elevator Pass (Still Broken)'. Collect 'em all!",
+          "[SYSTEM PATCH v404.27] AI Snark Rotation: 47 new Carl roasts added. Feet photos remain copyrighted.",
+          "[SYSTEM PATCH v404.28] Voodoo Board Expansion: PG-13 filter strengthened. [REDACTED] transmissions accelerated.",
+          "[SYSTEM PATCH v404.29] Final Warning: Skybridge Gauntlet loot table rotated. Survive or reset.",
+          "[SYSTEM PATCH v404.30] Buffed 'Badge Line Bypass' exploit—now requires actual stealth. Carl, your feet won't cut it here.",
+          "[SYSTEM WARNING v404.31] WARNING: TAKE A SHOWER. YOU HUMANS ARE DISGUSTING. CON-CRUD SPREADING—DONUT'S FUR IS NOT A TOWEL.",
+          "[SYSTEM PATCH v404.32] Nerfed shuttle void: Lost crawlers now respawn in the lobby. Florin, no more walkabouts.",
+          "[SYSTEM WARNING v404.33] WARNING: HYDRATE OR DIE. PIZZA IS NOT WATER, DESPITE WHAT ELLE CLAIMS AFTER MIDNIGHT.",
+          "[SYSTEM PATCH v404.34] Added 'Chaotic Good Vibe' aura—+15% to parade survival. Prepotente exempt due to panic incompatibility.",
+          "[SYSTEM WARNING v404.35] WARNING: DO NOT STARE AT THE CARPET. IT STARES BACK. MORDECAI'S THERAPY BILLS ARE SKYROCKETING.",
+          "[SYSTEM PATCH v404.36] Fixed Quasar's lawsuit loop: Bricks can no longer be sued. Occupancy concepts pending review.",
+          "[SYSTEM WARNING v404.37] WARNING: ELEVATORS ARE A TRAP. USE STAIRS, FATTIES. CARL, YOUR EXPLOSIVE FEET MIGHT HELP—OR NOT.",
+          "[SYSTEM PATCH v404.38] Buffed panic text rotation: Now includes 'MOTHERRR!' variants. Viewers love the drama.",
+          "[SYSTEM WARNING v404.39] WARNING: NO RED CARPET IN LOBBY? UNACCEPTABLE! DONUT DEMANDS UPGRADES—OR MONGO EATS YOUR COSPLAY.",
+          "[SYSTEM PATCH v404.40] Nerfed humidity swamp: Debuff now stacks slower. Odette thanks you for the 'sweaty arc' ratings.",
+          "[SYSTEM WARNING v404.41] WARNING: BODY PAINT LEVELS CRITICAL. SYSTEM DETECTING DANGEROUS SMEARS—WASH OFF BEFORE YOU MELT.",
+          "[SYSTEM PATCH v404.42] Added Growler Gary Easter Egg: Whiskey drops now 5% more left-handed. 14 respawns not included.",
+          "[SYSTEM WARNING v404.43] WARNING: SLEEP IS OPTIONAL, BUT NOT FOR HUMANS. PASS OUT IN A FUR SUIT? RESPAWN AS CON-CRUD BOSS.",
+          "[SYSTEM PATCH v404.44] Fixed Voodoo profanity filter: [REDACTED] now auto-accelerates. Keep it PG, crawlers.",
+          "[SYSTEM WARNING v404.45] WARNING: CROWD MANEUVERING REQUIRED. +5 TO DODGE, OR GET TRAMPLED BY THE SAME COSPLAY 47 TIMES.",
+          "[SYSTEM PATCH v404.46] Buffed achievement rarity: Celestial tiaras now 1% drop rate. Donut's grudging respect included.",
+          "[SYSTEM WARNING v404.47] WARNING: AIR QUALITY ALERT—CON-CRUD DETECTED. MASK UP OR BECOME A GHOUL MOB. KATIA, TANK IT.",
+          "[SYSTEM PATCH v404.48] Nerfed fire marshal boss: Table flips now 20% less dramatic. Casandra approves formation.",
+          "[SYSTEM WARNING v404.49] WARNING: OVERPRICED WATER? EXTORTION! QUASAR SUES HYDRATION—BUT YOU STILL NEED TO DRINK, IDIOTS.",
+          "[SYSTEM PATCH v404.50] Added Mongo photo op: Signed drops now grant +10 to adorable chomps. Princess demands credit.",
+          "[SYSTEM WARNING v404.51] WARNING: THE SUN IS YOUR ENEMY. SURFACE TEMPERATURES RISING—STAY IN THE VOID, CRAWLERS.",
+          "[SYSTEM PATCH v404.52] Fixed status rotator: 'SCREAMING VIBE' now audible. Zev says it polls well with Valtay.",
+          "[SYSTEM WARNING v404.53] WARNING: HOT GLUE FAILURE IMMINENT. COSPLAY INTEGRITY AT 50%—REPAIR OR EXPOSE YOUR SHAME.",
+          "[SYSTEM PATCH v404.54] Buffed share options: Bragging now grants minor loot boxes. Don't tell Mordecai.",
+          "[SYSTEM WARNING v404.55] WARNING: BADGE LINE CIRCLING BLOCK—ETERNAL. WITHER AND PERISH, OR USE THE MESH BYPASS.",
+          "[SYSTEM PATCH v404.56] Nerfed room line wrap: Now only around the building once. Eternal variant pending.",
+          "[SYSTEM WARNING v404.57] WARNING: 3AM WAFFLE HOUSE BOSS ACTIVE. SCATTERED, SMOTHERED, COVERED—OR DIE TRYING.",
+          "[SYSTEM PATCH v404.58] Added Easter egg overlay: God-tier status now includes actual nothing. Disappointment buffed.",
+          "[SYSTEM WARNING v404.59] WARNING: DECORATIVE POTPOURRI IS NOT OATS. CARL, STOP EATING IT. PREPOTENTE MELTDOWN IN 3...2..."
+        ];
 
         // Donut Mode Toggle Logic
-        window.toggleDonutMode = function() {
-            document.body.classList.toggle('donut-theme');
+        window.toggleDonutMode = function(forceState) {
+            // Apply theme toggle
+            if (typeof forceState !== 'undefined') {
+                if (forceState) document.body.classList.add('donut-theme');
+                else document.body.classList.remove('donut-theme');
+            } else {
+                document.body.classList.toggle('donut-theme');
+            }
+
+            // Save state to localStorage
             const isDonut = document.body.classList.contains('donut-theme');
+            localStorage.setItem('donutMode', isDonut);
+
+            // Update UI elements based on state
             const header = document.querySelector('.system-ai .header');
+            const mainTitle = document.getElementById('main-achievement-title');
+            const mainBody = document.getElementById('main-achievement-body');
             const snark = document.querySelector('#main-ai-snark');
             const voodooHeader = document.getElementById('voodoo-header');
+            const chatHeader = document.getElementById('live-chat-header');
+            const panicHeader = document.getElementById('panic-header');
+            const nfcHint = document.getElementById('nfc-hint');
+            const favicon = document.getElementById('dynamic-favicon');
             
+            // Generator Elements
+            const genTitle = document.getElementById('custom-title');
+            const genBody = document.querySelector('#gen-container p'); // Target the p inside container
+            const genBtn = document.querySelector('#gen-container button');
+
             if (isDonut) {
+                // Header / Intro
                 header.innerText = "👑 MONGO'S FAN CLUB 👑";
+                mainTitle.innerText = '"OFFICIAL CLUB MEMBER"';
+                mainBody.innerHTML = "CONGRATULATIONS! YOU HAVE BEEN SELECTED TO WORSHIP ME AND MONGO! THIS IS THE HIGHEST HONOR AVAILABLE IN THIS DUNGEON. TRY NOT TO EMBARRASS US BY WEARING CROCS. MONGO IS JUDGING YOUR FASHION CHOICES.";
                 snark.innerText = "REWARD: ACCESS TO EXCLUSIVE BEHIND-THE-SCENES FOOTAGE OF ME BEING PERFECT. YOU'RE WELCOME!";
                 snark.style.color = "#ff99cc";
+                
+                // Sections
                 voodooHeader.innerText = "[ PRINCESS DONUT'S ROYAL FAN CLUB ]";
+                chatHeader.innerText = "[ THE ROYAL GOSSIP FEED ]";
+                panicHeader.innerText = "[ MONGO APPALL-O-METER ]";
+                nfcHint.innerText = "[ ROYAL ALERT: TAP CHIP FOR AN EXCLUSIVE MUSICAL PERFORMANCE! ]";
+                
+                // Generator
+                genTitle.innerText = '"CONSULT THE QUEEN"';
+                genBody.innerText = "Receive a royal judgment on your convention performance.";
+                genBtn.innerText = "RECEIVE ROYAL EDICT";
+                
+                if(favicon) favicon.href = FAVICON_DONUT;
             } else {
+                // Header / Intro
                 header.innerText = "!!! NEW ACHIEVEMENT !!!";
-                // Restore random snark or default
-                const randomSnark = AI_SNARKS[Math.floor(Math.random() * AI_SNARKS.length)];
-                snark.innerText = `REWARD: ${randomSnark}`;
+                mainTitle.innerText = '"CON-FLOOR SURVIVOR"';
+                mainBody.innerHTML = "YOU DID IT! You’ve successfully navigated the <strong>ATLANTA SKYBRIDGE GAUNTLET</strong>! You have survived the humidity, the smell of burnt rubber and expensive polyester, and the sheer, unadulterated chaos of sixty-thousand humans trying to occupy the same square inch of hotel carpet!";
+                
+                // Restore random snark if switching back, unless page just loaded
+                if (typeof forceState === 'undefined') {
+                    const randomSnark = AI_SNARKS[Math.floor(Math.random() * AI_SNARKS.length)];
+                    snark.innerText = `REWARD: ${randomSnark}`;
+                }
                 snark.style.color = "#ffa500";
+                
+                // Sections
                 voodooHeader.innerText = "[ VOODOO BOARD ]";
+                chatHeader.innerText = "[ LIVE SYSTEM CHAT ]";
+                panicHeader.innerText = "[ PREPOTENTE PANIC METER ]";
+                nfcHint.innerText = "[ SYSTEM WARNING: PROXIMITY SCAN DETECTED. TAP CHIP FOR UNSTABLE DATA UPLOAD ]";
+                
+                // Generator
+                genTitle.innerText = '"TAP FOR FATE"';
+                genBody.innerText = "Generate a useless achievement based on your level of survival.";
+                genBtn.innerText = "GENERATE ACHIEVEMENT";
+
+                if(favicon) favicon.href = FAVICON_SYSTEM;
+            }
+            
+            // Re-init meters/stats immediately to switch status text/colors
+            window.initPanicMeter();
+            window.initLiveStats();
+        };
+
+        // Crawler ID Logic
+        window.initCrawlerID = function() {
+            let id = localStorage.getItem('crawlerID');
+            if (!id) {
+                // Generate random ID: #100,000 to #999,999
+                id = '#' + Math.floor(Math.random() * 900000 + 100000).toLocaleString();
+                localStorage.setItem('crawlerID', id);
+            }
+            // Update display
+            const idDisplay = document.getElementById('crawler-id');
+            if(idDisplay) {
+                 idDisplay.innerText = `WELCOME, CRAWLER ${id}`;
             }
         };
 
@@ -645,12 +850,40 @@
         };
 
         window.onload = function() {
+            // Populate Ticker
+            const tickerEl = document.getElementById('system-ticker');
+            // Shuffle array for randomness
+            const shuffledUpdates = [...SYSTEM_UPDATES].sort(() => 0.5 - Math.random());
+            // Join with a separator
+            tickerEl.innerText = shuffledUpdates.join("   ///   ");
+
             // Apply random snark
             const randomSnark = AI_SNARKS[Math.floor(Math.random() * AI_SNARKS.length)];
             document.getElementById('main-ai-snark').innerText = `REWARD: ${randomSnark}`;
 
+            // Initialize Crawler ID
+            window.initCrawlerID();
+
+            // Check for saved theme
+            const savedTheme = localStorage.getItem('donutMode');
+            if (savedTheme === 'true') {
+                window.toggleDonutMode(true);
+            }
+
             // Generate Dynamic Chat
             window.initChatCycle();
+            
+            // Auto-fill Crawler Designation from LocalStorage
+            const savedName = localStorage.getItem('crawlerName');
+            const crawlerID = localStorage.getItem('crawlerID');
+            const voodooInput = document.getElementById('voodoo-name');
+
+            if (savedName) {
+                voodooInput.value = savedName;
+            } else if (crawlerID) {
+                // Auto-fill generated ID if no saved name
+                voodooInput.value = `Crawler ${crawlerID}`;
+            }
 
             // Init Dynamic Statuses
             setTimeout(function() {
@@ -669,9 +902,10 @@
             if (window.panicInterval) clearInterval(window.panicInterval);
             const fill = document.getElementById('panic-fill');
             const text = document.getElementById('panic-text');
+            const isDonut = document.body.classList.contains('donut-theme');
             
-            // Expanded pool of panic statuses
-            const statuses = [
+            // Separate Status Pools
+            const prepotenteStatuses = [
                 "AAAAAAHHHHH!",
                 "ELEVATOR SABOTAGE!",
                 "OATS DEPLETION!",
@@ -686,25 +920,58 @@
                 "DIGNITY CRITICAL!"
             ];
 
+            const mongoStatuses = [
+                "THE LACK OF SNACKS",
+                "YOUR CHEAP SHOES",
+                "GRAVY BOAT",
+                "THE BUFFET LINE",
+                "THAT BADGE PHOTO",
+                "PLASTIC TIARAS",
+                "THE HUMIDITY",
+                "THAT AWFUL WIG",
+                "UNAUTHORIZED HEAD PATS",
+                "THAT COCKER SPANIEL"
+            ];
+
             window.panicInterval = setInterval(() => {
                 // Range 60% to 100% for visible movement
                 const newWidth = Math.floor(Math.random() * (100 - 60 + 1)) + 60;
                 fill.style.width = newWidth + '%';
                 
-                // Pick a random status every time
-                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-                text.innerText = `⚠️ CURRENT STATUS: ${randomStatus}`;
+                // Pick a random status based on theme
+                let randomStatus;
+                if(isDonut) {
+                     randomStatus = mongoStatuses[Math.floor(Math.random() * mongoStatuses.length)];
+                     text.innerText = `🦖 MONGO IS APPALLED BY: ${randomStatus}`;
+                     
+                     // Donut Mode Colors (Pink/Purple)
+                     if (newWidth > 90) {
+                        text.style.color = "#ff1493"; // Deep Pink
+                        fill.style.background = "linear-gradient(90deg, #ff69b4, #ff1493)";
+                     } else if (newWidth < 75) {
+                        text.style.color = "#ffb6c1"; // Light Pink
+                        fill.style.background = "linear-gradient(90deg, #ffb6c1, #ff69b4)";
+                     } else {
+                        text.style.color = "#ff69b4"; // Hot Pink
+                        fill.style.background = "linear-gradient(90deg, #ff69b4, #ff1493)";
+                     }
 
-                // Color logic based on width
-                if (newWidth > 90) {
-                    text.style.color = "#ff0000"; // Red
-                    fill.style.background = "linear-gradient(90deg, #ff4500, #ff0000)";
-                } else if (newWidth < 75) {
-                    text.style.color = "#fdfd96"; // Yellow
-                    fill.style.background = "linear-gradient(90deg, #fdfd96, #ffcc00)";
                 } else {
-                    text.style.color = "#ff8c00"; // Orange
-                    fill.style.background = "linear-gradient(90deg, #ffcc00, #ff4500)";
+                     // System Mode (Prepotente)
+                     randomStatus = prepotenteStatuses[Math.floor(Math.random() * prepotenteStatuses.length)];
+                     text.innerText = `🐐 CURRENT STATUS: ${randomStatus}`;
+                     
+                     // System Mode Colors (Red/Yellow/Orange)
+                     if (newWidth > 90) {
+                        text.style.color = "#ff0000"; // Red
+                        fill.style.background = "linear-gradient(90deg, #ff4500, #ff0000)";
+                    } else if (newWidth < 75) {
+                        text.style.color = "#fdfd96"; // Yellow
+                        fill.style.background = "linear-gradient(90deg, #fdfd96, #ffcc00)";
+                    } else {
+                        text.style.color = "#ff8c00"; // Orange
+                        fill.style.background = "linear-gradient(90deg, #ffcc00, #ff4500)";
+                    }
                 }
             }, 3000);
         };
@@ -717,8 +984,8 @@
             if (window.statsInterval) clearInterval(window.statsInterval);
             if (window.statusRotationInterval) clearInterval(window.statusRotationInterval);
 
-            // Pool of random statuses
-            const statusPool = [
+            // Pool of random statuses for SYSTEM MODE
+            const systemStatusPool = [
                 { label: "ELEVATORS", value: "[CRITICAL FAILURE]", color: "#ff0000" },
                 { label: "ELEVATORS", value: "FULL. ALWAYS FULL.", color: "#ffcc00" },
                 { label: "TEMPERATURE", value: "SURFACE OF THE SUN", color: "#ff4500" },
@@ -740,9 +1007,37 @@
                 { label: "SLEEP", value: "OPTIONAL", color: "#00ccff" }
             ];
 
+            // Pool of random statuses for DONUT MODE
+            const donutStatusPool = [
+                { label: "MONGO'S MOOD", value: "A GOOD BOY", color: "#ff69b4" },
+                { label: "MONGO'S MOOD", value: "HANGRY", color: "#ff0000" },
+                { label: "MONGO'S MOOD", value: "CHEWING ON COSPLAYER", color: "#ff1493" },
+                { label: "GLITTER LEVEL", value: "BLINDING", color: "#ffccff" },
+                { label: "GLITTER LEVEL", value: "EVERYWHERE", color: "#ff69b4" },
+                { label: "FAN WORSHIP", value: "DEAFENING", color: "#ff1493" },
+                { label: "FAN WORSHIP", value: "ACCEPTABLE", color: "#ff69b4" },
+                { label: "CARL'S FEET", value: "STILL GROSS", color: "#8b4513" },
+                { label: "TIARA SHINE", value: "MAXIMUM", color: "#ffd700" },
+                { label: "TREAT SUPPLY", value: "CRITICALLY LOW", color: "#ff0000" },
+                { label: "TREAT SUPPLY", value: "PLENTIFUL", color: "#00ff00" },
+                { label: "NUGGETS", value: "ACQUIRED", color: "#00ff00" },
+                { label: "HAVOK", value: "IMMINENT", color: "#ff4500" },
+                { label: "SIGNET", value: "IN THE WAY", color: "#ff0000" },
+                { label: "STYLE", value: "IMPECCABLE", color: "#ff69b4" }
+            ];
+
             const updateStatuses = () => {
+                const isDonut = document.body.classList.contains('donut-theme');
+                const pool = isDonut ? donutStatusPool : systemStatusPool;
+                
+                // Update Header
+                const statusHeader = document.querySelector('.floor-status .status-header');
+                if(statusHeader) {
+                    statusHeader.innerText = isDonut ? "[ ROYAL STATUS UPDATE ]" : "[ LIVE FLOOR STATUS: SECTOR ATLANTA ]";
+                }
+
                 // Shuffle and pick 3 unique items
-                const shuffled = [...statusPool].sort(() => 0.5 - Math.random());
+                const shuffled = [...pool].sort(() => 0.5 - Math.random());
                 const selected = shuffled.slice(0, 3);
                 
                 for(let i=0; i<3; i++) {
@@ -799,49 +1094,94 @@
         };
 
         window.generateAchievement = function() {
-            const adjectives = ["Legendary", "Decrepit", "Glistening", "Appalled", "Celestial", "Malfunctioning", "Stinky", "Exasperated", "Unhinged", "Copyright-Infringing", "God-Tier", "Sticky", "Slime-Covered", "Aggressive"];
-            const nouns = ["Skybridge", "Tiara", "Oats", "Packet", "Llama", "Cosplayer", "Holocron", "Badge", "Elevator", "Con-Crud", "Foot-Photo", "Vendor-Hall", "Service-Lift"];
-            const verbsPast = ["wrangled", "evaded", "glurped", "sued", "screamed at", "infiltrated", "buffered", "ignored", "acquired", "over-clocked", "petted", "dismantled"];
-            const verbsIng = ["wrangling", "evading", "glurping", "suing", "screaming at", "infiltrating", "buffering", "ignoring", "acquiring", "over-clocking", "petting", "dismantling"];
+            const isDonut = document.body.classList.contains('donut-theme');
+            let adj, noun, vPast, vIng, body, reward, title;
 
-            const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-            const roll = Math.floor(Math.random() * verbsPast.length);
+            if (!isDonut) {
+                // --- SYSTEM AI MODE ---
+                const adjectives = ["Legendary", "Decrepit", "Glistening", "Appalled", "Celestial", "Malfunctioning", "Stinky", "Exasperated", "Unhinged", "Copyright-Infringing", "God-Tier", "Sticky", "Slime-Covered", "Aggressive"];
+                const nouns = ["Skybridge", "Tiara", "Oats", "Packet", "Llama", "Cosplayer", "Holocron", "Badge", "Elevator", "Con-Crud", "Foot-Photo", "Vendor-Hall", "Service-Lift"];
+                const verbsPast = ["wrangled", "evaded", "glurped", "sued", "screamed at", "infiltrated", "buffered", "ignored", "acquired", "over-clocked", "petted", "dismantled"];
+                const verbsIng = ["wrangling", "evading", "glurping", "suing", "screaming at", "infiltrating", "buffering", "ignoring", "acquiring", "over-clocking", "petting", "dismantling"];
 
-            const adj = pick(adjectives);
-            const noun = pick(nouns);
-            const vPast = verbsPast[roll];
-            const vIng = verbsIng[roll];
+                const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+                const roll = Math.floor(Math.random() * verbsPast.length);
 
-            const article = /^[aeiou]/i.test(adj) ? "an" : "a";
-            const isPlural = ["Oats"].includes(noun);
-            const fullNoun = isPlural ? `${adj} ${noun}` : `${article} ${adj} ${noun}`;
+                adj = pick(adjectives);
+                noun = pick(nouns);
+                vPast = verbsPast[roll];
+                vIng = verbsIng[roll];
 
-            const bodies = [
-                `You have ${vPast} ${fullNoun} in a way that makes the AI very uncomfortable.`,
-                `Against all odds, you successfully ${vPast} ${fullNoun} without causing a sector-wide reset.`,
-                `By ${vIng} ${fullNoun}, you have officially peaked. It's all downhill from here.`,
-                `The AI noticed you ${vPast} ${fullNoun}. It's currently writing a creepy poem about it.`,
-                `You just ${vPast} ${fullNoun}. Mordecai is sighing so hard he might pass out.`
-            ];
+                const article = /^[aeiou]/i.test(adj) ? "an" : "a";
+                const isPlural = ["Oats", "Foot-Photo", "Badge-Ribbon"].includes(noun);
+                const fullNoun = isPlural ? `${adj} ${noun}` : `${article} ${adj} ${noun}`;
 
-            let reward = "A Common Quality Cotton Sock.";
-            if (noun === "Tiara") reward = "Princess Donut's grudging respect.";
-            else if (noun === "Oats") reward = "10 seconds of silence from Prepotente.";
-            else if (noun === "Foot-Photo") reward = "A [God-Tier] digital framing kit.";
-            else reward = pick(["Priority Elevator Access (Still Broken).", "A Signed Photo of Mongo.", "+5 to Humidity Resistance.", "A commemorative pin that says 'I Tried'."]);
+                const bodies = [
+                    `You have ${vPast} ${fullNoun} in a way that makes the AI very uncomfortable.`,
+                    `Against all odds, you successfully ${vPast} ${fullNoun} without causing a sector-wide reset.`,
+                    `By ${vIng} ${fullNoun}, you have officially peaked. It's all downhill from here.`,
+                    `The AI noticed you ${vPast} ${fullNoun}. It's currently writing a creepy poem about it.`,
+                    `You just ${vPast} ${fullNoun}. Mordecai is sighing so hard he might pass out.`
+                ];
+
+                reward = "A Common Quality Cotton Sock.";
+                if (noun === "Tiara") reward = "Princess Donut's grudging respect.";
+                else if (noun === "Oats") reward = "10 seconds of silence from Prepotente.";
+                else if (noun === "Foot-Photo") reward = "A [God-Tier] digital framing kit.";
+                else reward = pick(["Priority Elevator Access (Still Broken).", "A Signed Photo of Mongo.", "+5 to Humidity Resistance.", "A commemorative pin that says 'I Tried'."]);
+                
+                body = pick(bodies);
+                title = `"${adj} ${noun}"`;
+
+            } else {
+                // --- DONUT MODE ---
+                const dAdjectives = ["Sparkly", "Royal", "Inferior", "Acceptable", "Divine", "Glitzy", "Hideous", "Perfect", "Dazzling", "Unworthy"];
+                const dNouns = ["Tiara", "Fan Club", "Paparazzi", "Selfie", "Treat", "Catnip", "Spotlight", "Cosplay", "Red Carpet", "Sunglasses", "Peasant"];
+                const dVerbsPast = ["dazzled", "commanded", "outshined", "summoned", "judged", "blessed", "scolded", "ignored", "adopted"];
+                
+                const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+                const roll = Math.floor(Math.random() * dVerbsPast.length);
+
+                adj = pick(dAdjectives);
+                noun = pick(dNouns);
+                vPast = dVerbsPast[roll];
+                
+                const article = /^[aeiou]/i.test(adj) ? "an" : "a";
+                const fullNoun = `${article} ${adj} ${noun}`;
+
+                const dBodies = [
+                    `MONGO IS PLEASED! You have ${vPast} ${fullNoun} with adequate style.`,
+                    `Finally, someone who understands! You ${vPast} ${fullNoun} perfectly. Carl, take notes!`,
+                    `I saw you ${vPast} ${fullNoun}. It was ALMOST as good as when I do it. Almost.`,
+                    `You ${vPast} ${fullNoun}. The viewers love it! Our engagement metrics are spiking!`,
+                    `Ugh. You ${vPast} ${fullNoun}? Really? Without glitter? Fix it immediately.`
+                ];
+
+                reward = pick([
+                    "Permission to look at me for 5 seconds.",
+                    "A glitter bomb (It gets everywhere).",
+                    "A 'Mongo Approved' sticker.",
+                    "The honor of holding my sunglasses.",
+                    "A shoutout on the chat (Maybe).",
+                    "One (1) singular celestial treat."
+                ]);
+
+                body = pick(dBodies);
+                title = `"${adj.toUpperCase()} ${noun.toUpperCase()}"`;
+            }
 
             const container = document.getElementById('gen-container');
             container.classList.remove('glitch', 'rarity-common', 'rarity-legendary', 'rarity-celestial');
             void container.offsetWidth; 
             container.classList.add('glitch');
 
-            const rarity = pick(["rarity-common", "rarity-legendary", "rarity-celestial"]);
+            const rarity = (isDonut || Math.random() > 0.7) ? (Math.random() > 0.5 ? "rarity-legendary" : "rarity-celestial") : "rarity-common";
             container.classList.add(rarity);
 
-            window.currentTitle = `${adj} ${noun}`;
-            document.getElementById('custom-header').innerText = "NEW ACHIEVEMENT!";
-            document.getElementById('custom-title').innerText = `"${window.currentTitle}"`;
-            document.getElementById('custom-body').innerText = `${pick(bodies)}\n\nREWARD: ${reward}`;
+            window.currentTitle = title; // Update global for sharing
+            document.getElementById('custom-header').innerText = isDonut ? "ROYAL DECREE ISSUED!" : "NEW ACHIEVEMENT!";
+            document.getElementById('custom-title').innerText = title;
+            document.getElementById('custom-body').innerText = `${body}\n\nREWARD: ${reward}`;
             document.getElementById('share-options').style.display = 'block';
         };
 
@@ -959,6 +1299,12 @@
             const originalText = btn.innerText;
             btn.innerText = "[ TRANSMITTING... ]";
             btn.disabled = true;
+
+            // Save name to LocalStorage
+            if (nameField.value.trim()) {
+                localStorage.setItem('crawlerName', nameField.value.trim());
+            }
+
             const formData = new URLSearchParams();
             formData.append('name', name);
             formData.append('message', message);
