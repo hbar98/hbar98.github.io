@@ -396,7 +396,7 @@
         <div id="panic-bar" style="height: 30px; background: #111; border: 2px solid #fdfd96; position: relative; overflow: hidden; margin-top: 10px;">
             <div id="panic-fill" style="height: 100%; background: linear-gradient(90deg, #fdfd96, #ff0000); width: 85%; transition: width 1s;"></div>
         </div>
-        <p id="panic-text" style="font-size: 0.9em; margin-top: 8px; color: #fdfd96; font-weight: bold; text-transform: uppercase; font-family: 'Share Tech Mono', monospace;">🐐 CURRENT STATUS: AAAAAAHHHHH!</p>
+        <p id="panic-text" style="font-size: 0.9em; margin-top: 8px; color: #fdfd96; font-weight: bold; text-transform: uppercase; font-family: 'Share Tech Mono', monospace;">⚠️ CURRENT STATUS: AAAAAAHHHHH!</p>
     </div>
 
     <!-- NFC HINT -->
@@ -417,6 +417,7 @@
                 <button class="button share-btn" onclick="window.shareX()" style="background: #000;">X</button>
                 <button class="button share-btn" onclick="window.shareBlueSky()" style="background: #0085ff;">BlueSky</button>
                 <button class="button share-btn" onclick="window.shareThreads()" style="background: #444;">Threads</button>
+                <button class="button share-btn" onclick="window.shareNative()" style="background: #e1306c;">Share...</button>
                 <button class="button share-btn" onclick="window.copyToClipboard(event)" style="background: #00ff00; color: #000;">Copy</button>
             </div>
         </div>
@@ -426,7 +427,7 @@
     <div class="chat-window" style="margin-top: 25px; border-color: #00ff00; margin-bottom: 25px;" id="voodoo-board-container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <span class="username blinking-cursor" style="color: #00ff00; margin: 0; font-size: 1.2em;" id="voodoo-header">[ VOODOO BOARD ]</span>
-            <button onclick="window.loadVoodooMessages()" style="background: none; border: 1px solid #00ff00; color: #00ff00; font-size: 0.8em; padding: 4px 10px; cursor: pointer; font-family: 'Share Tech Mono', monospace;">REFRESH</button>
+            <button id="voodoo-refresh-btn" onclick="window.loadVoodooMessages(this)" style="background: none; border: 1px solid #00ff00; color: #00ff00; font-size: 0.8em; padding: 4px 10px; cursor: pointer; font-family: 'Share Tech Mono', monospace;">REFRESH</button>
         </div>
         
         <div id="voodoo-feed" style="height: 300px; overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; background: #000; padding: 10px; font-family: 'Share Tech Mono', monospace; font-size: 1.1em; border: 1px solid #333; margin-bottom: 15px; color: #00ff00; line-height: 1.5;" aria-live="polite">
@@ -1192,6 +1193,21 @@
         window.shareX = function() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(window.getShareText())}`, '_blank'); };
         window.shareBlueSky = function() { window.open(`https://bsky.app/intent/compose?text=${encodeURIComponent(window.getShareText())}`, '_blank'); };
         window.shareThreads = function() { window.open(`https://www.threads.net/intent/post?text=${encodeURIComponent(window.getShareText())}`, '_blank'); };
+        window.shareNative = function() {
+             if (navigator.share) {
+                navigator.share({
+                    title: 'Dungeon World Chat',
+                    text: window.getShareText(),
+                    url: 'https://hbar98.github.io'
+                }).catch(console.error);
+            } else {
+                // Fallback to copy if native share fails/isn't available
+                const btn = event.target; // grab button from click
+                btn.innerText = "COPIED!";
+                navigator.clipboard.writeText(window.getShareText());
+                setTimeout(() => { btn.innerText = "Share..."; }, 2000);
+            }
+        };
 
         window.copyToClipboard = function(e) {
             if (!navigator.clipboard) {
@@ -1249,9 +1265,17 @@
             counter.style.color = remaining < 20 ? '#ff0000' : '#00ff00';
         };
 
-        window.loadVoodooMessages = function() {
+        window.loadVoodooMessages = function(btnElement) {
             const feed = document.getElementById('voodoo-feed');
             
+            // UI Feedback
+            let originalText = "REFRESH";
+            if (btnElement) {
+                originalText = btnElement.innerText;
+                btnElement.innerText = "...";
+                btnElement.disabled = true;
+            }
+
             // Don't wipe the feed if it already has content, to prevent flickering
             if(feed.children.length === 0 || feed.innerText.includes('SYSTEM:')) {
                  feed.innerHTML = 'SYSTEM: ACCESSING VOODOO STREAM...';
@@ -1285,6 +1309,12 @@
                 // Only show error if feed is empty
                 if(feed.children.length === 0) {
                     feed.innerHTML = 'SYSTEM ERROR: CONNECTION INTERRUPTED.<br><br>Check browser console or verify Google Script deployment.';
+                }
+            })
+            .finally(() => {
+                if (btnElement) {
+                    btnElement.innerText = originalText;
+                    btnElement.disabled = false;
                 }
             });
         };
