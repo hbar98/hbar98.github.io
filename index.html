@@ -1624,6 +1624,34 @@
             try { return localStorage.getItem(key); } catch (e) { return null; }
         }
 
+        window.checkVoodooBanned = function() {
+            var strikes = parseInt(safeGetStorage('voodooStrikes') || '0', 10);
+            if (strikes >= 3) {
+                var btn = document.getElementById('voodoo-post-btn');
+                var msgField = document.getElementById('voodoo-msg');
+                if (btn) {
+                    btn.textContent = '[ DEVICE BANNED - GUIDELINES VIOLATED ]';
+                    btn.disabled = true;
+                    btn.style.backgroundColor = '#ff0000';
+                    btn.style.color = '#fff';
+                }
+                if (msgField) {
+                    msgField.disabled = true;
+                    msgField.placeholder = '[ TRANSMISSION CAPABILITIES PERMANENTLY REVOKED FOR THIS DEVICE ]';
+                }
+                return true;
+            }
+            return false;
+        };
+
+        window.addVoodooStrike = function() {
+            var strikes = parseInt(safeGetStorage('voodooStrikes') || '0', 10);
+            strikes++;
+            safeSetStorage('voodooStrikes', strikes);
+            window.checkVoodooBanned();
+            return strikes;
+        };
+
         function sanitize(str) {
             if (!str) return '';
             var clean = String(str);
@@ -3599,7 +3627,7 @@
         };
 
         function refreshVoodooAfterPost(expectedName, expectedMsg) {
-            // Apps Script often lags a few seconds after a no-cors POST before GET sees the row.
+            // Apps Script often lags a few seconds after a POST before GET sees the row.
             var delays = [1500, 3500, 6000, 10000];
             var attempt = 0;
 
@@ -3639,6 +3667,8 @@
         }
 
         window.postToVoodoo = function() {
+            if (window.checkVoodooBanned && window.checkVoodooBanned()) return;
+
             var nameField = document.getElementById('voodoo-name');
             var msgField = document.getElementById('voodoo-msg');
             var btn = document.getElementById('voodoo-post-btn');
@@ -3667,45 +3697,58 @@
                 updateCrawlerBanner();
             }
 
-            var formData = new URLSearchParams();
-            formData.append('name', name);
-            formData.append('message', message);
+            var payload = {
+                name: name,
+                message: message
+            };
 
-            // Google Apps Script: no-cors yields opaque response; HTTP errors still resolve.
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: formData.toString()
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
             })
-                .then(function() {
-                    lastVoodooPost = Date.now();
-                    msgField.value = '';
-                    window.updateCharCount(msgField);
-                    btn.textContent = '[ BROADCAST SUCCESS ]';
+            .then(function(res) {
+                if (!res.ok) throw new Error('Network Error');
+                return res.json();
+            })
+            .then(function(data) {
+                if (data.status === 'error') {
+                    var strikes = window.addVoodooStrike();
+                    throw new Error(data.message + ' (Strike ' + strikes + '/3)');
+                }
 
-                    // Show the message immediately so the board feels live
-                    if (feed) {
-                        if (feed.textContent && feed.textContent.indexOf('SYSTEM:') !== -1) {
-                            feed.textContent = '';
-                        }
-                        appendVoodooEntry(feed, name, message, { pending: true, prepend: true });
+                lastVoodooPost = Date.now();
+                msgField.value = '';
+                window.updateCharCount(msgField);
+                btn.textContent = '[ BROADCAST SUCCESS ]';
+
+                // Show the message immediately so the board feels live
+                if (feed) {
+                    if (feed.textContent && feed.textContent.indexOf('SYSTEM:') !== -1) {
+                        feed.textContent = '';
                     }
+                    appendVoodooEntry(feed, name, message, { pending: true, prepend: true });
+                }
 
-                    if (voodooPollTimer) clearTimeout(voodooPollTimer);
-                    refreshVoodooAfterPost(name, message);
+                if (voodooPollTimer) clearTimeout(voodooPollTimer);
+                refreshVoodooAfterPost(name, message);
 
-                    setTimeout(function() {
-                        btn.textContent = originalText;
-                        btn.disabled = false;
-                    }, 2500);
-                })
-                .catch(function(err) {
-                    console.error('Voodoo Post Error:', err);
-                    btn.textContent = '[ TRANSMISSION FAILED ]';
+                setTimeout(function() {
+                    btn.textContent = originalText;
                     btn.disabled = false;
-                    setTimeout(function() { btn.textContent = originalText; }, 3000);
-                });
+                }, 2500);
+            })
+            .catch(function(err) {
+                console.error('Voodoo Post Error:', err);
+                var errMsg = err.message || 'TRANSMISSION FAILED';
+                btn.textContent = '[ BLOCKED: ' + errMsg.toUpperCase() + ' ]';
+                btn.disabled = false;
+                setTimeout(function() { 
+                    if (!window.checkVoodooBanned()) {
+                        btn.textContent = originalText; 
+                    }
+                }, 4000);
+            });
         };
 
         function bindUI() {
@@ -3782,6 +3825,7 @@
 
         function init() {
             bindUI();
+            window.checkVoodooBanned();
 
             var tickerEl = document.getElementById('system-ticker');
             if (tickerEl) {
